@@ -2,6 +2,31 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
+// MUSIC PLAYER
+// Function to toggle play/pause of the audio
+function toggleAudio(audio, button) {
+    if (audio.paused) {
+        audio.play() // If paused, play the audio
+        button.innerHTML = '<i class="ph ph-speaker-high"></i>' // Change button text to 'Pause'
+    } else {
+        audio.pause() // If playing, pause the audio
+        button.innerHTML = '<i class="ph ph-speaker-simple-x"></i>' // Change button text to 'Play'
+    }
+}
+
+// Get the audio element
+const audio = new Audio('iPhone_By_the_Sea_Alarm_Ringtone_(Apple Sound)_-_Sound_Effect_for_Editing.mp3') // Replace 'path_to_your_audio_file.mp3' with the actual path to your audio file
+audio.loop = true // Set the audio to loop
+
+// Get the music button element
+const musicButton = document.getElementById('musicButton')
+
+// Add event listener to the music button
+musicButton.addEventListener('click', function() {
+    toggleAudio(audio, musicButton)
+})
+
+
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000)
 const renderer = new THREE.WebGLRenderer()
@@ -12,15 +37,17 @@ document.body.appendChild(renderer.domElement)
 const loader = new GLTFLoader()
 const planets = []
 
+const speedScale = 5
+
 const planetInfo = [
-    { name: 'Mercury', distance: 75, speed: 0.02, scale: [10, 10, 10] },
-    { name: 'Venus', distance: 110, speed: 0.015, scale: [0.1, 0.1, 0.1] },
-    { name: 'Earth', distance: 150, speed: 0.01, scale: [0.03, 0.03, 0.03] },
-    { name: 'Mars', distance: 200, speed: 0.007, scale: [60, 60, 60] },
-    { name: 'Jupiter', distance: 250, speed: 0.004, scale: [0.1, 0.1, 0.1] },
-    { name: 'Saturn', distance: 350, speed: 0.003, scale: [50, 50, 50] },
-    { name: 'Uranus', distance: 450, speed: 0.002, scale: [50, 50, 50] },
-    { name: 'Neptune', distance: 550, speed: 0.0015, scale: [25, 25, 25] },
+    { name: 'Mercury', distance: 75, speed: 0.02 * speedScale, scale: [10, 10, 10] },
+    { name: 'Venus', distance: 110, speed: 0.015 * speedScale, scale: [0.1, 0.1, 0.1] },
+    { name: 'Earth', distance: 150, speed: 0.01 * speedScale, scale: [0.03, 0.03, 0.03] },
+    { name: 'Mars', distance: 200, speed: 0.007 * speedScale, scale: [60, 60, 60] },
+    { name: 'Jupiter', distance: 250, speed: 0.004 * speedScale, scale: [0.1, 0.1, 0.1] },
+    { name: 'Saturn', distance: 350, speed: 0.003 * speedScale, scale: [50, 50, 50] },
+    { name: 'Uranus', distance: 450, speed: 0.002 * speedScale, scale: [50, 50, 50] },
+    { name: 'Neptune', distance: 550, speed: 0.0015 * speedScale, scale: [25, 25, 25] },
 ]
 
 
