@@ -36,6 +36,7 @@ function toggleAudio(audio, button) {
 // Get the audio element
 const audio = new Audio('interstellar.mp3') // Replace 'path_to_your_audio_file.mp3' with the actual path to your audio file
 audio.loop = true // Set the audio to loop
+audio.play()
 
 // Get the music button element
 const musicButton = document.getElementById('musicButton')
@@ -49,10 +50,11 @@ musicButton.addEventListener('click', function() {
 const scene = new THREE.Scene()
 let currentScene = scene
 const earthScene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000)
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 4000)
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
+
 
 const loader = new GLTFLoader()
 const planets = []
@@ -63,7 +65,7 @@ const planetInfo = [
     {
         name: 'Mercury',
         distance: 150,
-        positionY: 0,
+        positionY: 5,
         speed: 0.02 * speedScale,
         scale: [10, 10, 10],
         proximityRadius: 20,
@@ -98,6 +100,7 @@ const planetInfo = [
             camera.lookAt(new THREE.Vector3(0, 0, 0))
             cameraFollow = false
             currentScene = earthScene
+            document.getElementById('EarthCard').style.display = 'none'
         },
     },
     {
@@ -163,7 +166,7 @@ const planetInfo = [
 ]
 
 // Ambient Light
-const ambientLight = new THREE.AmbientLight(0xffffff, 1) // Soft white light
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.7) // Soft white light
 scene.add(ambientLight)
 
 // Load the Sun
@@ -200,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // Create a variable to store the movement speed
-let movementSpeed = 1
+let movementSpeed = 0.7
 
 // Create a variable to store the keyboard state
 let keyboard = {}
@@ -521,6 +524,7 @@ function update() {
             cameraYaw -= cameraRotationSpeed
         }
 
+
         checkProximity()
         if (keyboard['m']) {
             // Calculate the direction of movement based on the object's rotation
@@ -580,35 +584,11 @@ function update() {
 // Call the update function to start listening for key presses
 update()
 
+let bobbingAngle = 0  // Initial angle for the sine function
+const bobbingSpeed = 0.02  // Speed of the bobbing motion
+const bobbingAmount = 2  // Amount of vertical movement
 
-// Update planets in their orbits
-function animate() {
-    requestAnimationFrame(animate)
-    planets.forEach(planet => {
-
-        planet.mesh.rotation.y += 0.005
-
-
-        if (planetsMoving) {
-            // Increment the angle if the camera follows the ship, change the increment rate
-            if (cameraFollow) {
-                planet.angle += planet.speed / 5 // slower or different rate when following the camera
-            } else {
-                planet.angle += planet.speed // normal rate when not following
-            }
-
-            // Update position based on the new angle
-            planet.mesh.position.x = Math.cos(planet.angle) * planet.distance
-            planet.mesh.position.z = Math.sin(planet.angle) * planet.distance
-        }
-
-
-    })
-    sun.rotation.y -= 0.002
-    if (cameraFollow) {
-        updateCamera()
-    }
-
+function handleEarthSceneInteractions() {
     if (currentScene === earthScene) {
         bulletArray.forEach(function(bullet, index, bulletArray) {
             bullet.position.z -= 5
@@ -639,6 +619,39 @@ function animate() {
             })
         })
     }
+}
+
+// Update planets in their orbits
+function animate() {
+    requestAnimationFrame(animate)
+    planets.forEach(planet => {
+
+        planet.mesh.rotation.y += 0.005
+
+
+        if (planetsMoving) {
+            // Increment the angle if the camera follows the ship, change the increment rate
+            if (cameraFollow) {
+                planet.angle += planet.speed / 2 // slower or different rate when following the camera
+            } else {
+                planet.angle += planet.speed // normal rate when not following
+            }
+
+            // Update position based on the new angle
+            planet.mesh.position.x = Math.cos(planet.angle) * planet.distance
+            planet.mesh.position.z = Math.sin(planet.angle) * planet.distance
+        }
+
+
+    })
+    sun.rotation.y -= 0.002
+    if (cameraFollow) {
+        updateCamera()
+        bobbingAngle += bobbingSpeed
+        ship.position.y = 10 + Math.sin(bobbingAngle) * bobbingAmount
+    }
+
+    handleEarthSceneInteractions()
 
 
     renderer.render(currentScene, camera)
