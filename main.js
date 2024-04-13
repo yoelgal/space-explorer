@@ -48,7 +48,7 @@ musicButton.addEventListener('click', function() {
 const scene = new THREE.Scene()
 let currentScene = scene
 const earthScene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000)
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
@@ -582,8 +582,8 @@ function animate() {
     requestAnimationFrame(animate)
     planets.forEach(planet => {
         planet.mesh.rotation.y += 0.005
-        // planet.mesh.position.x = Math.cos(planet.angle) * planet.distance
-        // planet.mesh.position.z = Math.sin(planet.angle) * planet.distance
+        planet.mesh.position.x = Math.cos(planet.angle) * planet.distance
+        planet.mesh.position.z = Math.sin(planet.angle) * planet.distance
     })
     sun.rotation.y -= 0.002
     if (cameraFollow) {
