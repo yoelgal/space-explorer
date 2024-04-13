@@ -33,7 +33,7 @@ loader.load('Sun.glb', (gltf) => {
 var ship;
 var cameraFollow = false;
 
-// Load the Sun
+// Load the Ship
 loader.load('Flying saucer.glb', (gltf) => {
     ship = gltf.scene;
     ship.scale.set(1, 1, 1); // Adjust scale for visibility
@@ -42,7 +42,6 @@ loader.load('Flying saucer.glb', (gltf) => {
 });
 
 // Controls
-
 // Create a variable to store the movement speed
 var movementSpeed = 1;
 
@@ -77,8 +76,9 @@ controls.update();
 
 // Assuming you have a loaded ship object and a camera already created
 var cameraOffset = new THREE.Vector3(0, 2, -5); // Adjust the offset as needed
-var cameraRotationSpeed = 0.02; // Adjust the rotation speed as needed
+var cameraRotationSpeed = 0.04; // Adjust the rotation speed as needed
 var cameraYaw = 0;
+var cameraDirection = new THREE.Vector3();
 
 // Function to update camera position based on the ship's position and orientation
 function updateCamera() {
@@ -93,6 +93,8 @@ function updateCamera() {
         camera.position.add(ship.position);
         // Make the camera look at the ship's position
         camera.lookAt(ship.position);
+
+        camera.getWorldDirection(cameraDirection);
     }
 }
 
@@ -101,8 +103,7 @@ function update() {
     // Move forward when 'W' key is pressed
     if (keyboard['w']) {
         // Calculate the direction of movement based on the object's rotation
-        var velocity = new THREE.Vector3(0, 0, 1);
-        velocity.applyQuaternion(camera.quaternion);
+        var velocity = new THREE.Vector3(movementSpeed * cameraDirection.x, 0, movementSpeed * cameraDirection.z);
         // Update the ship's position
         ship.position.add(velocity);
     }
@@ -110,12 +111,12 @@ function update() {
     if (keyboard['a']) {
         // Calculate the direction of movement based on the object's rotation
         cameraYaw += cameraRotationSpeed
+        console.log(camera.quaternion);
     }
 
     if (keyboard['s']) {
         // Calculate the direction of movement based on the object's rotation
-        var velocity = new THREE.Vector3(0, 0, -1);
-        velocity.applyQuaternion(camera.quaternion);
+        var velocity = new THREE.Vector3(movementSpeed * -cameraDirection.x, 0, movementSpeed * -cameraDirection.z);
         // Update the ship's position
         ship.position.add(velocity);
     }
