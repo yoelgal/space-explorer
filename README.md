@@ -1,3 +1,6 @@
 # StudentHack 2024
 
-Deez
+### 3D Assets:
+https://poly.pizza/
+
+### Credits and acknowledgements:
