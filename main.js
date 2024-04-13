@@ -65,8 +65,8 @@ loader.load('Sun.glb', (gltf) => {
     scene.add(sunLight)
 });
 
-var ship;
-var cameraFollow = false;
+let ship;
+let cameraFollow = false;
 
 // Load the Ship
 loader.load('Flying saucer.glb', (gltf) => {
@@ -76,12 +76,24 @@ loader.load('Flying saucer.glb', (gltf) => {
     scene.add(ship);
 });
 
-// Controls
-// Create a variable to store the movement speed
-var movementSpeed = 1;
+document.addEventListener("DOMContentLoaded", function () {
+    var startButton = document.getElementById("startButton");
 
-// Create a variable to store the keyboard state
-var keyboard = {};
+    startButton.addEventListener("click", function () {
+        start();
+    });
+});
+
+// const startButton = document.getElementById("startButton");
+// startButton.addEventListener("click", start());
+
+// Controls
+
+// Create a variable to store the movement speed
+let movementSpeed = 1;
+
+// Create a letiable to store the keyboard state
+let keyboard = {};
 
 // Event listener to track key presses
 document.addEventListener('keydown', function (event) {
@@ -146,16 +158,16 @@ camera.position.set(0.08343285914438951, 335.3059565045275, 8.361134584523754)
 camera.lookAt(new THREE.Vector3(0, 0, 0))
 
 // Assuming you have a loaded ship object and a camera already created
-var cameraOffset = new THREE.Vector3(0, 2, -5); // Adjust the offset as needed
-var cameraRotationSpeed = 0.04; // Adjust the rotation speed as needed
-var cameraYaw = 0;
-var cameraDirection = new THREE.Vector3();
+let cameraOffset = new THREE.Vector3(0, 2, -5); // Adjust the offset as needed
+let cameraRotationSpeed = 0.04; // Adjust the rotation speed as needed
+let cameraYaw = 0;
+let cameraDirection = new THREE.Vector3();
 
 // Function to update camera position based on the ship's position and orientation
 function updateCamera() {
     if (ship) { // Assuming 'ship' is your loaded ship ship
         // Apply ship's rotation to the offset
-        var offset = cameraOffset.clone().applyQuaternion(ship.quaternion);
+        let offset = cameraOffset.clone().applyQuaternion(ship.quaternion);
         // Set camera's position relative to the ship's position
         camera.position.copy(ship.position).add(offset);
         // Rotate the camera around the ship
@@ -169,12 +181,20 @@ function updateCamera() {
     }
 }
 
+function start() {
+    // Update the ship's position
+    const overlay = document.getElementById("overlay");
+    overlay.remove();
+    ship.position.set(0, 0, 0);
+    cameraFollow = true;
+}
+
 // Function to update object position based on key presses
 function update() {
     // Move forward when 'W' key is pressed
     if (keyboard['w']) {
         // Calculate the direction of movement based on the object's rotation
-        var velocity = new THREE.Vector3(movementSpeed * cameraDirection.x, 0, movementSpeed * cameraDirection.z);
+        let velocity = new THREE.Vector3(movementSpeed * cameraDirection.x, 0, movementSpeed * cameraDirection.z);
         // Update the ship's position
         ship.position.add(velocity);
     }
@@ -187,7 +207,7 @@ function update() {
 
     if (keyboard['s']) {
         // Calculate the direction of movement based on the object's rotation
-        var velocity = new THREE.Vector3(movementSpeed * -cameraDirection.x, 0, movementSpeed * -cameraDirection.z);
+        let velocity = new THREE.Vector3(movementSpeed * -cameraDirection.x, 0, movementSpeed * -cameraDirection.z);
         // Update the ship's position
         ship.position.add(velocity);
     }
@@ -197,11 +217,6 @@ function update() {
         cameraYaw -= cameraRotationSpeed
     }
 
-    if (keyboard[' ']) {
-        // Update the ship's position
-        ship.position.set(0, 0, 0);
-        cameraFollow = true;
-    }
 
     // You can add similar checks for other keys like 'A', 'S', 'D' for movement in other directions
 
