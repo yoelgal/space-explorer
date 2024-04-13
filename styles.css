@@ -1,0 +1,36 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#startButton {
+    font-family: 'MuseoModerno', sans-serif;
+    padding: 20px 40px;
+    font-size: 50px;
+    border: 2px solid white; /* White border */
+    background-color: rgba(255, 255, 255, 0.2); /* Transparent background */
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Button shadow */
+    transition: all 0.3s ease;
+}
+
+
+#startButton:hover {
+    background-color: #2980b9; /* Darker button color on hover */
+}
