@@ -8,8 +8,9 @@ https://poly.pizza/
 
 dwaaw
 Sun by Zoe XR [CC-BY] via Poly Pizza \
+Sun by Jarlan Perez [CC-BY] via Poly Pizza \
 Mercury by Zoe XR [CC-BY] via Poly Pizza \
-Venus by Poly by Google [CC-BY] via Poly Pizza \
+Venus by Zoe XR [CC-BY] via Poly Pizza \
 Earth by Poly by Google [CC-BY] via Poly Pizza \
 Mars by Jarlan Perez [CC-BY] via Poly Pizza \
 Jupiter by Poly by Google [CC-BY] via Poly Pizza \
