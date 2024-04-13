@@ -10,6 +10,7 @@ let sunLoaded = false
 let shipLoaded = false
 let planetsLoaded = 0  // This counts loaded planets
 const totalPlanets = 8 // Total number of planets to be loaded
+let planetsMoving = true
 
 
 // BLOB
@@ -346,11 +347,13 @@ function checkProximity() {
         if (distance < planet.proximityRadius + 15) {
             if (!planet.showingInfo) { // Check if info is not already being shown
                 showInfoCard(planet)
+                planetsMoving = false
                 planet.showingInfo = true
             }
         } else {
             if (planet.showingInfo) { // Check if info is currently shown
                 hideInfoCard(planet)
+                planetsMoving = true
                 planet.showingInfo = false
             }
         }
@@ -480,7 +483,7 @@ function start() {
         overlay.remove()
     }
 
-    ship.position.set(0, 0, -600)
+    ship.position.set(0, 10, -600)
     cameraFollow = true
 }
 
@@ -577,59 +580,69 @@ function update() {
 // Call the update function to start listening for key presses
 update()
 
+
 // Update planets in their orbits
 function animate() {
     requestAnimationFrame(animate)
     planets.forEach(planet => {
+
         planet.mesh.rotation.y += 0.005
-        planet.mesh.position.x = Math.cos(planet.angle) * planet.distance
-        planet.mesh.position.z = Math.sin(planet.angle) * planet.distance
+
+
+        if (planetsMoving) {
+            // Increment the angle if the camera follows the ship, change the increment rate
+            if (cameraFollow) {
+                planet.angle += planet.speed / 5 // slower or different rate when following the camera
+            } else {
+                planet.angle += planet.speed // normal rate when not following
+            }
+
+            // Update position based on the new angle
+            planet.mesh.position.x = Math.cos(planet.angle) * planet.distance
+            planet.mesh.position.z = Math.sin(planet.angle) * planet.distance
+        }
+
+
     })
     sun.rotation.y -= 0.002
     if (cameraFollow) {
         updateCamera()
-        planets.forEach(planet => {
-            planet.angle += planet.speed / 15
-        })
-    } else {
-        planets.forEach(planet => {
-            planet.angle += planet.speed
+    }
+
+    if (currentScene === earthScene) {
+        bulletArray.forEach(function(bullet, index, bulletArray) {
+            bullet.position.z -= 5
+            if (bullet.position.z <= -500) {
+                earthScene.remove(bullet)
+                bulletArray.splice(index, 1)
+            }
         })
 
-        if (currentScene === earthScene) {
-            bulletArray.forEach(function(bullet, index, bulletArray) {
-                bullet.position.z -= 5
-                if (bullet.position.z <= -500) {
+        enemyArray.forEach(function(enemy, index, enemyArray) {
+            enemy.position.z += 5
+            if (enemy.position.z >= 300) {
+                earthScene.remove(enemy)
+                enemyArray.splice(index, 1)
+                cameraFollow = true
+                currentScene = scene
+            }
+            bulletArray.forEach(function(bullet, index2, bulletArray) {
+                let bulletBox = new THREE.Box3().setFromObject(bullet)
+                let enemyBox = new THREE.Box3().setFromObject(enemy)
+
+                if (bulletBox.intersectsBox(enemyBox)) {
                     earthScene.remove(bullet)
-                    bulletArray.splice(index, 1)
-                }
-            })
-
-            enemyArray.forEach(function(enemy, index, enemyArray) {
-                enemy.position.z += 5
-                if (enemy.position.z >= 300) {
+                    bulletArray.splice(index2, 1)
                     earthScene.remove(enemy)
                     enemyArray.splice(index, 1)
-                    cameraFollow = true
-                    currentScene = scene
                 }
-                bulletArray.forEach(function(bullet, index2, bulletArray) {
-                    let bulletBox = new THREE.Box3().setFromObject(bullet)
-                    let enemyBox = new THREE.Box3().setFromObject(enemy)
-
-                    if (bulletBox.intersectsBox(enemyBox)) {
-                        earthScene.remove(bullet)
-                        bulletArray.splice(index2, 1)
-                        earthScene.remove(enemy)
-                        enemyArray.splice(index, 1)
-                    }
-                })
             })
-        }
-
-
+        })
     }
+
+
     renderer.render(currentScene, camera)
 }
+
 
 animate()
