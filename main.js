@@ -27,6 +27,7 @@ musicButton.addEventListener('click', function () {
 })
 
 const scene = new THREE.Scene();
+const earthScene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -68,6 +69,8 @@ loader.load('Sun.glb', (gltf) => {
 let ship;
 let cameraFollow = false;
 
+let currentScene = scene;
+
 // Load the Ship
 loader.load('Flying saucer.glb', (gltf) => {
     ship = gltf.scene;
@@ -83,9 +86,6 @@ document.addEventListener("DOMContentLoaded", function () {
         start();
     });
 });
-
-// const startButton = document.getElementById("startButton");
-// startButton.addEventListener("click", start());
 
 // Controls
 
@@ -120,7 +120,6 @@ function loadPlanet(modelPath, scale, distance, speed) {
 
         // Add planet mesh to the scene
         scene.add(planetMesh)
-        console.log('Planet added')
         // planets.push({ mesh: planetMesh, wireframe: wireframe, speed: speed / 2, distance: distance, angle: 0 })
         planets.push({ mesh: planetMesh, speed: speed / 2, distance: distance, angle: 0 })
     }, undefined, function (error) {
@@ -163,6 +162,64 @@ let cameraRotationSpeed = 0.04; // Adjust the rotation speed as needed
 let cameraYaw = 0;
 let cameraDirection = new THREE.Vector3();
 
+
+
+// SCENE TWO //
+// Scene 2 sun test
+
+let earthShip;
+let earthShipSpeed = 5;
+
+loader.load('Spaceship.glb', (gltf) => {
+    earthShip = gltf.scene;
+    earthShip.scale.set(0.1, 0.1, 0.1); // Adjust scale for visibility
+    earthShip.position.set(0, 0, 180);
+    earthShip.rotation.set(0, 3.14, 0)
+    earthScene.add(earthShip);
+});
+
+const earthAmbientLight = new THREE.AmbientLight(0xffffff, 1); // Soft white light
+earthScene.add(earthAmbientLight);
+
+let canFire = true;
+let canEnemy = true;
+
+var bulletArray = [];
+
+function createBullet(position) {
+    let bullet;
+    loader.load('Spaceship.glb', (gltf) => {
+        bullet = gltf.scene;
+        bullet.scale.set(0.1, 0.1, 0.1); // Adjust scale for visibility
+        position.z -= 10;
+        bullet.position.set(position.x, position.y, position.z);
+        bullet.rotation.set(0, 3.14, 0);
+
+        earthScene.add(bullet);
+        bulletArray.push(bullet)
+    });
+}
+
+var enemyArray = [];
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function createEnemy() {
+    let enemy;
+    loader.load('Spaceship.glb', (gltf) => {
+        enemy = gltf.scene;
+        enemy.scale.set(0.1, 0.1, 0.1); // Adjust scale for visibility
+        enemy.position.set(getRandomInt(-300, 300), 0, -300);
+
+        earthScene.add(enemy);
+        enemyArray.push(enemy)
+    });
+}
+
 // Function to update camera position based on the ship's position and orientation
 function updateCamera() {
     if (ship) { // Assuming 'ship' is your loaded ship ship
@@ -192,29 +249,78 @@ function start() {
 // Function to update object position based on key presses
 function update() {
     // Move forward when 'W' key is pressed
-    if (keyboard['w']) {
-        // Calculate the direction of movement based on the object's rotation
-        let velocity = new THREE.Vector3(movementSpeed * cameraDirection.x, 0, movementSpeed * cameraDirection.z);
-        // Update the ship's position
-        ship.position.add(velocity);
+    if (currentScene == scene) {
+        if (keyboard['w']) {
+            // Calculate the direction of movement based on the object's rotation
+            let velocity = new THREE.Vector3(movementSpeed * cameraDirection.x, 0, movementSpeed * cameraDirection.z);
+            // Update the ship's position
+            ship.position.add(velocity);
+        }
+
+        if (keyboard['a']) {
+            // Calculate the direction of movement based on the object's rotation
+            cameraYaw += cameraRotationSpeed
+        }
+
+        if (keyboard['s']) {
+            // Calculate the direction of movement based on the object's rotation
+            let velocity = new THREE.Vector3(movementSpeed * -cameraDirection.x, 0, movementSpeed * -cameraDirection.z);
+            // Update the ship's position
+            ship.position.add(velocity);
+        }
+
+        if (keyboard['d']) {
+            // Calculate the direction of movement based on the object's rotation
+            cameraYaw -= cameraRotationSpeed
+        }
+
+        if (keyboard['m']) {
+            // Calculate the direction of movement based on the object's rotation
+            camera.position.set(0, 300, 0)
+            camera.lookAt(new THREE.Vector3(0, 0, 0))
+            cameraFollow = false;
+            currentScene = earthScene;
+        }
     }
 
-    if (keyboard['a']) {
-        // Calculate the direction of movement based on the object's rotation
-        cameraYaw += cameraRotationSpeed
-        console.log(camera.quaternion);
-    }
+    else if (currentScene == earthScene) {
 
-    if (keyboard['s']) {
-        // Calculate the direction of movement based on the object's rotation
-        let velocity = new THREE.Vector3(movementSpeed * -cameraDirection.x, 0, movementSpeed * -cameraDirection.z);
-        // Update the ship's position
-        ship.position.add(velocity);
-    }
+        if (canEnemy) {
+            createEnemy();
+            canEnemy = false;
+            setTimeout(function () {
+                canEnemy = true; // Reset flag after cooldown period
+            }, getRandomInt(3000, 5000));
+        }
 
-    if (keyboard['d']) {
-        // Calculate the direction of movement based on the object's rotation
-        cameraYaw -= cameraRotationSpeed
+        if (keyboard['a']) {
+            // Calculate the direction of movement based on the object's rotation
+            let earthVelocity = new THREE.Vector3(-earthShipSpeed, 0, 0);
+            // Update the earthShip's position
+            earthShip.position.add(earthVelocity);
+        }
+
+        if (keyboard['d']) {
+            // Calculate the direction of movement based on the object's rotation
+            let earthVelocity = new THREE.Vector3(earthShipSpeed, 0, 0);
+            // Update the earthShip's position
+            earthShip.position.add(earthVelocity);
+        }
+
+        if (keyboard[' '] && canFire) {
+            // Calculate the direction of movement based on the object's rotation
+            createBullet(earthShip.position.clone())
+            canFire = false;
+            setTimeout(function () {
+                canFire = true; // Reset flag after cooldown period
+            }, 1000);
+        };
+
+        if (keyboard['n']) {
+            // Calculate the direction of movement based on the object's rotation
+            cameraFollow = true;
+            currentScene = scene;
+        }
     }
 
 
@@ -240,10 +346,41 @@ function animate() {
         // planet.wireframe.position.copy(planet.mesh.position)
         // planet.wireframe.rotation.copy(planet.mesh.rotation)
     })
+
+    bulletArray.forEach(function (bullet, index, bulletArray) {
+        bullet.position.z -= 5;
+        if (bullet.position.z <= -500) {
+            earthScene.remove(bullet);
+            bulletArray.splice(index, 1);
+        }
+    })
+
+    enemyArray.forEach(function (enemy, index, enemyArray) {
+        enemy.position.z += 5;
+        if (enemy.position.z >= 300) {
+            earthScene.remove(enemy);
+            enemyArray.splice(index, 1);
+            cameraFollow = true;
+            currentScene = scene;
+        }
+        bulletArray.forEach(function (bullet, index2, bulletArray) {
+            let bulletBox = new THREE.Box3().setFromObject(bullet);
+            let enemyBox = new THREE.Box3().setFromObject(enemy);
+
+            if (bulletBox.intersectsBox(enemyBox)) {
+                earthScene.remove(bullet);
+                bulletArray.splice(index2, 1);
+                earthScene.remove(enemy);
+                enemyArray.splice(index, 1);
+            }
+        })
+    })
+
     if (cameraFollow) {
         updateCamera();
     }
-    renderer.render(scene, camera);
+
+    renderer.render(currentScene, camera);
 }
 
 animate();
