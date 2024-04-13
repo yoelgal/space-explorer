@@ -14,7 +14,7 @@ let planetsMoving = true
 
 
 // BLOB
-document.addEventListener('mousemove', function(event) {
+document.addEventListener('mousemove', function (event) {
     let blob = document.getElementById('blob')
     // Update the blob's position to the mouse coordinates
     blob.style.left = event.pageX + 'px'
@@ -41,7 +41,7 @@ audio.loop = true // Set the audio to loop
 const musicButton = document.getElementById('musicButton')
 
 // Add event listener to the music button
-musicButton.addEventListener('click', function() {
+musicButton.addEventListener('click', function () {
     toggleAudio(audio, musicButton)
 })
 
@@ -49,6 +49,7 @@ musicButton.addEventListener('click', function() {
 const scene = new THREE.Scene()
 let currentScene = scene
 const earthScene = new THREE.Scene()
+const sunScene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000)
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -68,7 +69,7 @@ const planetInfo = [
         scale: [10, 10, 10],
         proximityRadius: 20,
         showingInfo: false,
-        action: function() {
+        action: function () {
         },
     },
     {
@@ -79,7 +80,7 @@ const planetInfo = [
         scale: [15, 15, 15],
         proximityRadius: 30,
         showingInfo: false,
-        action: function() {
+        action: function () {
             console.log('Nothing yet')
         },
 
@@ -92,7 +93,7 @@ const planetInfo = [
         scale: [0.03, 0.03, 0.03],
         proximityRadius: 30,
         showingInfo: false,
-        action: function() {
+        action: function () {
             // Calculate the direction of movement based on the object's rotation
             camera.position.set(0, 300, 0)
             camera.lookAt(new THREE.Vector3(0, 0, 0))
@@ -108,7 +109,7 @@ const planetInfo = [
         scale: [60, 60, 60],
         proximityRadius: 30,
         showingInfo: false,
-        action: function() {
+        action: function () {
             console.log('Nothing yet')
         },
     },
@@ -120,7 +121,7 @@ const planetInfo = [
         scale: [0.1, 0.1, 0.1],
         proximityRadius: 30,
         showingInfo: false,
-        action: function() {
+        action: function () {
             console.log('Nothing yet')
         },
     },
@@ -132,7 +133,7 @@ const planetInfo = [
         scale: [50, 50, 50],
         proximityRadius: 80,
         showingInfo: false,
-        action: function() {
+        action: function () {
             console.log('Nothing yet')
         },
     },
@@ -144,7 +145,7 @@ const planetInfo = [
         scale: [50, 50, 50],
         proximityRadius: 50,
         showingInfo: false,
-        action: function() {
+        action: function () {
             console.log('Nothing yet')
         },
     },
@@ -156,7 +157,7 @@ const planetInfo = [
         scale: [25, 25, 25],
         proximityRadius: 50,
         showingInfo: false,
-        action: function() {
+        action: function () {
             console.log('Nothing yet')
         },
     },
@@ -174,8 +175,6 @@ loader.load('Sun.glb', (gltf) => {
     scene.add(sun)
     sunLoaded = true
     checkAllAssetsLoaded()
-
-
 })
 
 
@@ -190,10 +189,10 @@ loader.load('Flying saucer.glb', (gltf) => {
 
 })
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     let startButton = document.getElementById('startButton')
 
-    startButton.addEventListener('click', function() {
+    startButton.addEventListener('click', function () {
         start()
     })
 })
@@ -206,11 +205,11 @@ let movementSpeed = 1
 let keyboard = {}
 
 // Event listener to track key presses
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
     keyboard[event.key] = true
 })
 
-document.addEventListener('keyup', function(event) {
+document.addEventListener('keyup', function (event) {
     keyboard[event.key] = false
 })
 
@@ -238,7 +237,7 @@ function loadPlanet(modelPath, positionY, scale, distance, speed, proximityRadiu
 
         planetsLoaded++
         checkAllAssetsLoaded()
-    }, undefined, function(error) {
+    }, undefined, function (error) {
         console.error('Error loading planet:', modelPath, error)
     })
 }
@@ -280,7 +279,7 @@ function showInfoCard(entity) {
         console.log(entity)  // Debugging output
         console.log(entity.action)  // Check if action is a function
         if (typeof entity.action === 'function') {
-            const enterKeyListener = function(event) {
+            const enterKeyListener = function (event) {
                 if (event.key === 'Enter') {
                     entity.action()
                 }
@@ -294,7 +293,6 @@ function showInfoCard(entity) {
         }
     }
 }
-
 
 function hideInfoCard(entity) {
     if (!entity) {
@@ -459,6 +457,90 @@ function createEnemy() {
     })
 }
 
+// Scene 3 start
+
+const sunAmbientLight = new THREE.AmbientLight(0xffffff, 1) // Soft white light
+sunScene.add(sunAmbientLight)
+
+let orderedPlanets = []
+let shuffledPlanets = []
+
+let planetsShuffled = false
+
+let planetsPointer = 0
+
+loader.load('Sun.glb', (gltf) => {
+    let tempSun = gltf.scene
+    tempSun.scale.set(20, 20, 20) // Adjust scale for visibility
+    tempSun.position.set(0, 0, 0)
+    orderedPlanets.push([tempSun, 0])
+    sunScene.add(tempSun)
+})
+
+loader.load('Mercury.glb', (gltf) => {
+    let mercury = gltf.scene
+    mercury.scale.set(40, 40, 40) // Adjust scale for visibility
+    mercury.position.set(0, 0, 0)
+    orderedPlanets.push([mercury, 1])
+    sunScene.add(mercury)
+})
+
+loader.load('Venus.glb', (gltf) => {
+    let venus = gltf.scene
+    venus.scale.set(35, 35, 35) // Adjust scale for visibility
+    venus.position.set(0, 0, 0)
+    orderedPlanets.push([venus, 2])
+    sunScene.add(venus)
+})
+
+loader.load('Earth.glb', (gltf) => {
+    let earth = gltf.scene
+    earth.scale.set(0.06, 0.06, 0.06) // Adjust scale for visibility
+    earth.position.set(0, 0, 0)
+    orderedPlanets.push([earth, 3])
+    sunScene.add(earth)
+})
+
+loader.load('Mars.glb', (gltf) => {
+    let mars = gltf.scene
+    mars.scale.set(175, 175, 175) // Adjust scale for visibility
+    mars.position.set(0, 0, 0)
+    orderedPlanets.push([mars, 4])
+    sunScene.add(mars)
+})
+
+loader.load('Jupiter.glb', (gltf) => {
+    let jupiter = gltf.scene
+    jupiter.scale.set(0.2, 0.2, 0.2) // Adjust scale for visibility
+    jupiter.position.set(0, 0, 0)
+    orderedPlanets.push([jupiter, 5])
+    sunScene.add(jupiter)
+})
+
+loader.load('Saturn.glb', (gltf) => {
+    let saturn = gltf.scene
+    saturn.scale.set(35, 35, 35) // Adjust scale for visibility
+    saturn.position.set(0, 0, 0)
+    orderedPlanets.push([saturn, 6])
+    sunScene.add(saturn)
+})
+
+loader.load('Uranus.glb', (gltf) => {
+    let uranus = gltf.scene
+    uranus.scale.set(90, 90, 90) // Adjust scale for visibility
+    uranus.position.set(0, 0, 0)
+    orderedPlanets.push([uranus, 7])
+    sunScene.add(uranus)
+})
+
+loader.load('Neptune.glb', (gltf) => {
+    let neptune = gltf.scene
+    neptune.scale.set(35, 35, 35) // Adjust scale for visibility
+    neptune.position.set(0, 0, 0)
+    orderedPlanets.push([neptune, 8])
+    sunScene.add(neptune)
+})
+
 // Function to update camera position based on the ship's position and orientation
 function updateCamera() {
 
@@ -487,6 +569,21 @@ function start() {
     cameraFollow = true
 }
 
+let zPressed = false
+let xPressed = false
+
+function listsSame() {
+    // Iterate over each element in the lists
+    for (var i = 0; i < shuffledPlanets.length; i++) {
+        // Compare elements at the same position
+        if (shuffledPlanets[i] !== orderedPlanets[i]) {
+            return false; // If elements don't match, lists are not in the same order
+        }
+    }
+
+    // If all elements match at corresponding positions, lists are in the same order
+    return true;
+}
 
 // Function to update object position based on key presses
 function update() {
@@ -527,14 +624,14 @@ function update() {
             camera.position.set(0, 300, 0)
             camera.lookAt(new THREE.Vector3(0, 0, 0))
             cameraFollow = false
-            currentScene = earthScene
+            currentScene = sunScene
         }
     } else if (currentScene === earthScene) {
 
         if (canEnemy) {
             createEnemy()
             canEnemy = false
-            setTimeout(function() {
+            setTimeout(function () {
                 canEnemy = true // Reset flag after cooldown period
             }, getRandomInt(3000, 5000))
         }
@@ -557,7 +654,7 @@ function update() {
             // Calculate the direction of movement based on the object's rotation
             createBullet(earthShip.position.clone())
             canFire = false
-            setTimeout(function() {
+            setTimeout(function () {
                 canFire = true // Reset flag after cooldown period
             }, 1000)
         }
@@ -567,6 +664,40 @@ function update() {
             // Calculate the direction of movement based on the object's rotation
             cameraFollow = true
             currentScene = scene
+        }
+
+    }
+    else if (currentScene === sunScene) {
+        if (keyboard['n']) {
+            // Calculate the direction of movement based on the object's rotation
+            cameraFollow = true
+            currentScene = scene
+        }
+
+        if (keyboard['z'] && !zPressed) {
+            zPressed = true
+            let temp = shuffledPlanets[planetsPointer]
+            shuffledPlanets[planetsPointer] = shuffledPlanets[planetsPointer + 1]
+            shuffledPlanets[planetsPointer + 1] = temp
+            planetsPointer += 1
+            if (planetsPointer > 7)
+                planetsPointer = 0
+        }
+        else if (!keyboard['z']) {
+            zPressed = false
+        }
+        if (keyboard['x'] && !xPressed) {
+            xPressed = true
+            planetsPointer += 1
+            if (planetsPointer > 7) {
+                planetsPointer = 0
+                if (listsSame())
+                    console.log("yeaaaah")
+            }
+
+        }
+        else if (!keyboard['x']) {
+            xPressed = false
         }
     }
 
@@ -610,7 +741,7 @@ function animate() {
     }
 
     if (currentScene === earthScene) {
-        bulletArray.forEach(function(bullet, index, bulletArray) {
+        bulletArray.forEach(function (bullet, index, bulletArray) {
             bullet.position.z -= 5
             if (bullet.position.z <= -500) {
                 earthScene.remove(bullet)
@@ -618,7 +749,7 @@ function animate() {
             }
         })
 
-        enemyArray.forEach(function(enemy, index, enemyArray) {
+        enemyArray.forEach(function (enemy, index, enemyArray) {
             enemy.position.z += 5
             if (enemy.position.z >= 300) {
                 earthScene.remove(enemy)
@@ -626,7 +757,7 @@ function animate() {
                 cameraFollow = true
                 currentScene = scene
             }
-            bulletArray.forEach(function(bullet, index2, bulletArray) {
+            bulletArray.forEach(function (bullet, index2, bulletArray) {
                 let bulletBox = new THREE.Box3().setFromObject(bullet)
                 let enemyBox = new THREE.Box3().setFromObject(enemy)
 
@@ -638,6 +769,24 @@ function animate() {
                 }
             })
         })
+    }
+    else if (currentScene === sunScene) {
+        if (!planetsShuffled) {
+            orderedPlanets.sort(function (a, b) {
+                // Compare the values at index 1 of each element
+                return a[1] - b[1]; // Ascending order
+            });
+            // for (let i = 0; i < orderedPlanets.length; i++) {
+            //     let j = getRandomInt(0, orderedPlanets.length - 1)
+            //     shuffledPlanets.push(orderedPlanets[j])
+            //     orderedPlanets.slice(j, 1)
+            // }
+            shuffledPlanets = orderedPlanets
+            planetsShuffled = true
+        }
+        shuffledPlanets.forEach(function (planet, index, shuffledPlanets) {
+            planet[0].position.set(((index - 4) * 85), 0, 0)
+        });
     }
 
 
