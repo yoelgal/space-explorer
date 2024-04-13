@@ -1,13 +1,24 @@
+// TODO: Add cool textures to outside of solar system
+
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 // Global variables
 let ship, cameraFollow = false, sun
+let showingSunInfo = false
 let sunLoaded = false
 let shipLoaded = false
 let planetsLoaded = 0  // This counts loaded planets
 const totalPlanets = 8 // Total number of planets to be loaded
-let currentScene = scene;
+
+
+// BLOB
+document.addEventListener('mousemove', function(event) {
+    let blob = document.getElementById('blob')
+    // Update the blob's position to the mouse coordinates
+    blob.style.left = event.pageX + 'px'
+    blob.style.top = event.pageY + 'px'
+})
 
 // MUSIC PLAYER
 // Function to toggle play/pause of the audio
@@ -33,75 +44,120 @@ musicButton.addEventListener('click', function() {
     toggleAudio(audio, musicButton)
 })
 
-const scene = new THREE.Scene();
-const earthScene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+// SCENE
+const scene = new THREE.Scene()
+let currentScene = scene
+const earthScene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+const renderer = new THREE.WebGLRenderer()
+renderer.setSize(window.innerWidth, window.innerHeight)
+document.body.appendChild(renderer.domElement)
 
 const loader = new GLTFLoader()
 const planets = []
 
-const speedScale = 1.5
+const speedScale = 0.6
 
 const planetInfo = [
     {
         name: 'Mercury',
-        distance: 105,
+        distance: 150,
         positionY: 0,
         speed: 0.02 * speedScale,
         scale: [10, 10, 10],
         proximityRadius: 20,
+        showingInfo: false,
+        action: function() {
+        },
     },
     {
         name: 'Venus',
-        distance: 200,
-        positionY: -10,
+        distance: 230,
+        positionY: 0,
         speed: 0.015 * speedScale,
-        scale: [0.1, 0.1, 0.1],
+        scale: [15, 15, 15],
         proximityRadius: 30,
+        showingInfo: false,
+        action: function() {
+            console.log('Nothing yet')
+        },
+
     },
     {
         name: 'Earth',
-        distance: 270,
+        distance: 300,
         positionY: -10,
         speed: 0.01 * speedScale,
         scale: [0.03, 0.03, 0.03],
         proximityRadius: 30,
+        showingInfo: false,
+        action: function() {
+            // Calculate the direction of movement based on the object's rotation
+            camera.position.set(0, 300, 0)
+            camera.lookAt(new THREE.Vector3(0, 0, 0))
+            cameraFollow = false
+            currentScene = earthScene
+        },
     },
-    { name: 'Mars', distance: 350, positionY: 0, speed: 0.007 * speedScale, scale: [60, 60, 60], proximityRadius: 30 },
+    {
+        name: 'Mars',
+        distance: 380,
+        positionY: 0,
+        speed: 0.007 * speedScale,
+        scale: [60, 60, 60],
+        proximityRadius: 30,
+        showingInfo: false,
+        action: function() {
+            console.log('Nothing yet')
+        },
+    },
     {
         name: 'Jupiter',
-        distance: 430,
+        distance: 460,
         positionY: -10,
         speed: 0.004 * speedScale,
         scale: [0.1, 0.1, 0.1],
         proximityRadius: 30,
+        showingInfo: false,
+        action: function() {
+            console.log('Nothing yet')
+        },
     },
     {
         name: 'Saturn',
-        distance: 560,
+        distance: 590,
         positionY: 0,
         speed: 0.003 * speedScale,
         scale: [50, 50, 50],
         proximityRadius: 80,
+        showingInfo: false,
+        action: function() {
+            console.log('Nothing yet')
+        },
     },
     {
         name: 'Uranus',
-        distance: 690,
+        distance: 720,
         positionY: 0,
         speed: 0.002 * speedScale,
         scale: [50, 50, 50],
         proximityRadius: 50,
+        showingInfo: false,
+        action: function() {
+            console.log('Nothing yet')
+        },
     },
     {
         name: 'Neptune',
-        distance: 820,
+        distance: 850,
         positionY: 0,
         speed: 0.0015 * speedScale,
         scale: [25, 25, 25],
         proximityRadius: 50,
+        showingInfo: false,
+        action: function() {
+            console.log('Nothing yet')
+        },
     },
 ]
 
@@ -111,22 +167,15 @@ scene.add(ambientLight)
 
 // Load the Sun
 loader.load('Sun.glb', (gltf) => {
-    const sun = gltf.scene
-    sun.scale.set(50, 50, 50) // Adjust scale for visibility
+    sun = gltf.scene
+    sun.scale.set(40, 40, 40) // Adjust scale for visibility
     sun.position.set(0, 0, 0)
     scene.add(sun)
     sunLoaded = true
     checkAllAssetsLoaded()
 
-    // Add a point light to simulate the sun's light
-    const sunLight = new THREE.PointLight(0xffffff, 5, 0) // Adjust the intensity and distance as needed
-    sunLight.position.copy(sun.position)
-    scene.add(sunLight)
-});
 
-
-
-
+})
 
 
 // Load the Ship
@@ -141,7 +190,7 @@ loader.load('Flying saucer.glb', (gltf) => {
 })
 
 document.addEventListener('DOMContentLoaded', function() {
-    var startButton = document.getElementById('startButton')
+    let startButton = document.getElementById('startButton')
 
     startButton.addEventListener('click', function() {
         start()
@@ -165,10 +214,10 @@ document.addEventListener('keyup', function(event) {
 })
 
 planetInfo.forEach(planet => {
-    loadPlanet(`${planet.name}.glb`, planet.positionY, planet.scale, planet.distance, planet.speed, planet.proximityRadius, planet.name)
+    loadPlanet(`${planet.name}.glb`, planet.positionY, planet.scale, planet.distance, planet.speed, planet.proximityRadius, planet.name, planet.action)
 })
 
-function loadPlanet(modelPath, positionY, scale, distance, speed, proximityRadius, name) {
+function loadPlanet(modelPath, positionY, scale, distance, speed, proximityRadius, name, action) {
     loader.load(modelPath, (gltf) => {
         const planetMesh = gltf.scene
         planetMesh.scale.set(...scale)
@@ -183,6 +232,7 @@ function loadPlanet(modelPath, positionY, scale, distance, speed, proximityRadiu
             distance: distance,
             angle: 0,
             proximityRadius: proximityRadius,
+            action: action,
         })
 
         planetsLoaded++
@@ -216,23 +266,94 @@ function bounceBack(celestialBodyPosition) {
     ship.position.add(new THREE.Vector3(reflection.x, 0, reflection.z).multiplyScalar(2))  // Adjust the multiplier based on desired bounce effect
 }
 
+function showInfoCard(entity) {
+    if (!entity) {
+        document.getElementById('SunCard').style.display = 'block'
+        showingSunInfo = true
+        console.log('Info being shown for Sun')
+    } else {
+        const card = document.getElementById(`${entity.name}Card`)
+        if (card) {
+            card.style.display = 'block'
+        }
+        console.log(entity)  // Debugging output
+        console.log(entity.action)  // Check if action is a function
+        if (typeof entity.action === 'function') {
+            const enterKeyListener = function(event) {
+                if (event.key === 'Enter') {
+                    entity.action()
+                }
+            }
+            document.addEventListener('keydown', enterKeyListener)
+            entity.showingInfo = true
+            entity.enterKeyListener = enterKeyListener // Store the listener function in the entity object
+            console.log(`Info being shown for ${entity.name}`)
+        } else {
+            console.log(`No action defined for ${entity.name}`)  // This will clarify the missing action
+        }
+    }
+}
+
+
+function hideInfoCard(entity) {
+    if (!entity) {
+        const card = document.getElementById('SunCard')
+        if (card) {
+            card.style.display = 'none'
+        }
+        showingSunInfo = false
+        console.log('Info being hidden for Sun')
+    } else {
+        const card = document.getElementById(`${entity.name}Card`)
+        if (card) {
+            card.style.display = 'none'
+        }
+        if (entity.showingInfo && typeof entity.enterKeyListener === 'function') {
+            document.removeEventListener('keydown', entity.enterKeyListener)
+            entity.showingInfo = false
+        }
+        console.log(`Info being hidden for ${entity.name}`)
+    }
+}
+
 
 function checkProximity() {
     const shipPosition = ship.position
     const sunPosition = new THREE.Vector3(0, 0, 0)
-
-    // Check proximity to the sun
     const distanceToSun = shipPosition.distanceTo(sunPosition)
-    const proximityThresholdSun = 100 // Example proximity radius for the sun
+    const proximityThresholdSun = 80
+
+    // Toggle visibility based on proximity for the sun
+    if (distanceToSun < proximityThresholdSun + 15) {
+        if (!showingSunInfo) { // Check if info is not already being shown
+            showInfoCard(null)
+            showingSunInfo = true
+        }
+    } else {
+        if (showingSunInfo) { // Check if info is currently shown
+            hideInfoCard(null)
+            showingSunInfo = false
+        }
+    }
     if (distanceToSun < proximityThresholdSun) {
         console.log('Warning: Close proximity to the Sun!')
         bounceBack(sunPosition)
     }
 
-
-    // Check proximity to each planet
+    // Toggle visibility based on proximity for each planet
     planets.forEach(planet => {
         const distance = shipPosition.distanceTo(planet.mesh.position)
+        if (distance < planet.proximityRadius + 15) {
+            if (!planet.showingInfo) { // Check if info is not already being shown
+                showInfoCard(planet)
+                planet.showingInfo = true
+            }
+        } else {
+            if (planet.showingInfo) { // Check if info is currently shown
+                hideInfoCard(planet)
+                planet.showingInfo = false
+            }
+        }
         if (distance < planet.proximityRadius) {
             console.log(`Warning: Close proximity to ${planet.name}!`)
             bounceBack(planet.mesh.position)
@@ -241,13 +362,13 @@ function checkProximity() {
 }
 
 
-createStars(150, 1000)
+createStars(200, 1400)
 
 function createStars(amount, universeSize) {
     const geometry = new THREE.SphereGeometry(3, 6, 6)  // Small sphere for stars
     const material = new THREE.MeshBasicMaterial({ color: 0xffffff })
 
-    const innerRadius = 800  // Inner radius of the star field
+    const innerRadius = 1200  // Inner radius of the star field
 
     for (let i = 0; i < amount; i++) {
         // Randomize star position within a spherical shell defined by innerRadius and outerRadius
@@ -274,84 +395,83 @@ camera.lookAt(new THREE.Vector3(0, 0, 0))
 
 // Assuming you have a loaded ship object and a camera already created
 let cameraOffset = new THREE.Vector3(0, 2, -5) // Adjust the offset as needed
-let cameraRotationSpeed = 0.02 // Adjust the rotation speed as needed
+let cameraRotationSpeed = 0.015 // Adjust the rotation speed as needed
 let cameraYaw = 0
 let cameraDirection = new THREE.Vector3()
-
 
 
 // SCENE TWO //
 // Scene 2 sun test
 
-let earthShip;
-let earthShipSpeed = 5;
+let earthShip
+let earthShipSpeed = 5
 
 loader.load('Spaceship.glb', (gltf) => {
-    earthShip = gltf.scene;
-    earthShip.scale.set(0.1, 0.1, 0.1); // Adjust scale for visibility
-    earthShip.position.set(0, 0, 180);
+    earthShip = gltf.scene
+    earthShip.scale.set(0.1, 0.1, 0.1) // Adjust scale for visibility
+    earthShip.position.set(0, 0, 180)
     earthShip.rotation.set(0, 3.14, 0)
-    earthScene.add(earthShip);
-});
+    earthScene.add(earthShip)
+})
 
-const earthAmbientLight = new THREE.AmbientLight(0xffffff, 1); // Soft white light
-earthScene.add(earthAmbientLight);
+const earthAmbientLight = new THREE.AmbientLight(0xffffff, 1) // Soft white light
+earthScene.add(earthAmbientLight)
 
-let canFire = true;
-let canEnemy = true;
+let canFire = true
+let canEnemy = true
 
-var bulletArray = [];
+let bulletArray = []
 
 function createBullet(position) {
-    let bullet;
+    let bullet
     loader.load('Spaceship.glb', (gltf) => {
-        bullet = gltf.scene;
-        bullet.scale.set(0.1, 0.1, 0.1); // Adjust scale for visibility
-        position.z -= 10;
-        bullet.position.set(position.x, position.y, position.z);
-        bullet.rotation.set(0, 3.14, 0);
+        bullet = gltf.scene
+        bullet.scale.set(0.1, 0.1, 0.1) // Adjust scale for visibility
+        position.z -= 10
+        bullet.position.set(position.x, position.y, position.z)
+        bullet.rotation.set(0, 3.14, 0)
 
-        earthScene.add(bullet);
+        earthScene.add(bullet)
         bulletArray.push(bullet)
-    });
+    })
 }
 
-var enemyArray = [];
+let enemyArray = []
 
 function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    min = Math.ceil(min)
+    max = Math.floor(max)
+    return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 function createEnemy() {
-    let enemy;
+    let enemy
     loader.load('Spaceship.glb', (gltf) => {
-        enemy = gltf.scene;
-        enemy.scale.set(0.1, 0.1, 0.1); // Adjust scale for visibility
-        enemy.position.set(getRandomInt(-300, 300), 0, -300);
+        enemy = gltf.scene
+        enemy.scale.set(0.1, 0.1, 0.1) // Adjust scale for visibility
+        enemy.position.set(getRandomInt(-300, 300), 0, -300)
 
-        earthScene.add(enemy);
+        earthScene.add(enemy)
         enemyArray.push(enemy)
-    });
+    })
 }
 
 // Function to update camera position based on the ship's position and orientation
 function updateCamera() {
-    if (ship) { // Assuming 'ship' is your loaded ship ship
-        // Apply ship's rotation to the offset
-        let offset = cameraOffset.clone().applyQuaternion(ship.quaternion)
-        // Set camera's position relative to the ship's position
-        camera.position.copy(ship.position).add(offset)
-        // Rotate the camera around the ship
-        camera.position.sub(ship.position)
-        camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraYaw)
-        camera.position.add(ship.position)
-        // Make the camera look at the ship's position
-        camera.lookAt(ship.position)
 
-        camera.getWorldDirection(cameraDirection)
-    }
+    // Apply ship's rotation to the offset
+    let offset = cameraOffset.clone().applyQuaternion(ship.quaternion)
+    // Set camera's position relative to the ship's position
+    camera.position.copy(ship.position).add(offset)
+    // Rotate the camera around the ship
+    camera.position.sub(ship.position)
+    camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraYaw)
+    camera.position.add(ship.position)
+    // Make the camera look at the ship's position
+    camera.lookAt(ship.position)
+
+    camera.getWorldDirection(cameraDirection)
+
 }
 
 function start() {
@@ -359,6 +479,7 @@ function start() {
     if (overlay) {
         overlay.remove()
     }
+
     ship.position.set(0, 0, -600)
     cameraFollow = true
 }
@@ -375,9 +496,9 @@ function update() {
     if (currentScene === scene) {
         if (keyboard['w']) {
             // Calculate the direction of movement based on the object's rotation
-            let velocity = new THREE.Vector3(movementSpeed * cameraDirection.x, 0, movementSpeed * cameraDirection.z);
+            let velocity = new THREE.Vector3(movementSpeed * cameraDirection.x, 0, movementSpeed * cameraDirection.z)
             // Update the ship's position
-            ship.position.add(velocity);
+            ship.position.add(velocity)
         }
 
         if (keyboard['a']) {
@@ -387,9 +508,9 @@ function update() {
 
         if (keyboard['s']) {
             // Calculate the direction of movement based on the object's rotation
-            let velocity = new THREE.Vector3(movementSpeed * -cameraDirection.x, 0, movementSpeed * -cameraDirection.z);
+            let velocity = new THREE.Vector3(movementSpeed * -cameraDirection.x, 0, movementSpeed * -cameraDirection.z)
             // Update the ship's position
-            ship.position.add(velocity);
+            ship.position.add(velocity)
         }
 
         if (keyboard['d']) {
@@ -397,53 +518,52 @@ function update() {
             cameraYaw -= cameraRotationSpeed
         }
 
-    checkProximity()
+        checkProximity()
         if (keyboard['m']) {
             // Calculate the direction of movement based on the object's rotation
             camera.position.set(0, 300, 0)
             camera.lookAt(new THREE.Vector3(0, 0, 0))
-            cameraFollow = false;
-            currentScene = earthScene;
+            cameraFollow = false
+            currentScene = earthScene
         }
-    }
-
-    else if (currentScene == earthScene) {
+    } else if (currentScene === earthScene) {
 
         if (canEnemy) {
-            createEnemy();
-            canEnemy = false;
-            setTimeout(function () {
-                canEnemy = true; // Reset flag after cooldown period
-            }, getRandomInt(3000, 5000));
+            createEnemy()
+            canEnemy = false
+            setTimeout(function() {
+                canEnemy = true // Reset flag after cooldown period
+            }, getRandomInt(3000, 5000))
         }
 
         if (keyboard['a']) {
             // Calculate the direction of movement based on the object's rotation
-            let earthVelocity = new THREE.Vector3(-earthShipSpeed, 0, 0);
+            let earthVelocity = new THREE.Vector3(-earthShipSpeed, 0, 0)
             // Update the earthShip's position
-            earthShip.position.add(earthVelocity);
+            earthShip.position.add(earthVelocity)
         }
 
         if (keyboard['d']) {
             // Calculate the direction of movement based on the object's rotation
-            let earthVelocity = new THREE.Vector3(earthShipSpeed, 0, 0);
+            let earthVelocity = new THREE.Vector3(earthShipSpeed, 0, 0)
             // Update the earthShip's position
-            earthShip.position.add(earthVelocity);
+            earthShip.position.add(earthVelocity)
         }
 
         if (keyboard[' '] && canFire) {
             // Calculate the direction of movement based on the object's rotation
             createBullet(earthShip.position.clone())
-            canFire = false;
-            setTimeout(function () {
-                canFire = true; // Reset flag after cooldown period
-            }, 1000);
-        };
+            canFire = false
+            setTimeout(function() {
+                canFire = true // Reset flag after cooldown period
+            }, 1000)
+        }
+
 
         if (keyboard['n']) {
             // Calculate the direction of movement based on the object's rotation
-            cameraFollow = true;
-            currentScene = scene;
+            cameraFollow = true
+            currentScene = scene
         }
     }
 
@@ -461,57 +581,55 @@ update()
 function animate() {
     requestAnimationFrame(animate)
     planets.forEach(planet => {
-        planet.mesh.rotation.y += 0.01
+        planet.mesh.rotation.y += 0.005
+        // planet.mesh.position.x = Math.cos(planet.angle) * planet.distance
+        // planet.mesh.position.z = Math.sin(planet.angle) * planet.distance
     })
-
-
+    sun.rotation.y -= 0.002
     if (cameraFollow) {
         updateCamera()
+        planets.forEach(planet => {
+            planet.angle += planet.speed / 15
+        })
     } else {
         planets.forEach(planet => {
             planet.angle += planet.speed
-            planet.mesh.position.x = Math.cos(planet.angle) * planet.distance
-            planet.mesh.position.z = Math.sin(planet.angle) * planet.distance
-
-        // // Update wireframe position and rotation to match the planet
-        // planet.wireframe.position.copy(planet.mesh.position)
-        // planet.wireframe.rotation.copy(planet.mesh.rotation)
-    })
-
-    bulletArray.forEach(function (bullet, index, bulletArray) {
-        bullet.position.z -= 5;
-        if (bullet.position.z <= -500) {
-            earthScene.remove(bullet);
-            bulletArray.splice(index, 1);
-        }
-    })
-
-    enemyArray.forEach(function (enemy, index, enemyArray) {
-        enemy.position.z += 5;
-        if (enemy.position.z >= 300) {
-            earthScene.remove(enemy);
-            enemyArray.splice(index, 1);
-            cameraFollow = true;
-            currentScene = scene;
-        }
-        bulletArray.forEach(function (bullet, index2, bulletArray) {
-            let bulletBox = new THREE.Box3().setFromObject(bullet);
-            let enemyBox = new THREE.Box3().setFromObject(enemy);
-
-            if (bulletBox.intersectsBox(enemyBox)) {
-                earthScene.remove(bullet);
-                bulletArray.splice(index2, 1);
-                earthScene.remove(enemy);
-                enemyArray.splice(index, 1);
-            }
         })
-    })
 
-    if (cameraFollow) {
-        updateCamera();
+        if (currentScene === earthScene) {
+            bulletArray.forEach(function(bullet, index, bulletArray) {
+                bullet.position.z -= 5
+                if (bullet.position.z <= -500) {
+                    earthScene.remove(bullet)
+                    bulletArray.splice(index, 1)
+                }
+            })
+
+            enemyArray.forEach(function(enemy, index, enemyArray) {
+                enemy.position.z += 5
+                if (enemy.position.z >= 300) {
+                    earthScene.remove(enemy)
+                    enemyArray.splice(index, 1)
+                    cameraFollow = true
+                    currentScene = scene
+                }
+                bulletArray.forEach(function(bullet, index2, bulletArray) {
+                    let bulletBox = new THREE.Box3().setFromObject(bullet)
+                    let enemyBox = new THREE.Box3().setFromObject(enemy)
+
+                    if (bulletBox.intersectsBox(enemyBox)) {
+                        earthScene.remove(bullet)
+                        bulletArray.splice(index2, 1)
+                        earthScene.remove(enemy)
+                        enemyArray.splice(index, 1)
+                    }
+                })
+            })
+        }
+
+
     }
+    renderer.render(currentScene, camera)
+}
 
-    renderer.render(currentScene, camera);
-}
-}
 animate()
