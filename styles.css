@@ -1,4 +1,5 @@
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -11,7 +12,8 @@ body, html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent black */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,42 +23,60 @@ body, html {
     font-family: 'MuseoModerno', sans-serif;
     padding: 20px 40px;
     font-size: 50px;
-    border: 2px solid white; /* White border */
+    border: 2px solid white;
+    /* White border */
     background-color: transparent;
     color: white;
     cursor: pointer;
     border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Button shadow */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Button shadow */
     transition: all 0.3s ease;
 }
 
 
 #startButton:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* Transparent background */
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Transparent background */
 }
 
 #musicButton {
     z-index: 1000;
-    position: fixed; /* Fixed position */
-    top: 10px; /* 10 pixels from the top */
-    right: 10px; /* 10 pixels from the right */
-    background-color: transparent; /* Transparent background */
-    color: white; /* White text */
-    border: 2px solid white; /* White border */
-    border-radius: 50%; /* Make it round */
-    width: 50px; /* Width of the button */
-    height: 50px; /* Height of the button, same as width to make it a circle */
-    font-size: 24px; /* Size of the music note */
-    line-height: 45px; /* Center the music note vertically */
-    text-align: center; /* Center the music note horizontally */
-    cursor: pointer; /* Change mouse cursor to pointer when hovering over the button */
-    outline: none; /* Remove focus outline */
-    box-shadow: none; /* Remove box-shadow if any */
+    position: fixed;
+    /* Fixed position */
+    top: 10px;
+    /* 10 pixels from the top */
+    right: 10px;
+    /* 10 pixels from the right */
+    background-color: transparent;
+    /* Transparent background */
+    color: white;
+    /* White text */
+    border: 2px solid white;
+    /* White border */
+    border-radius: 50%;
+    /* Make it round */
+    width: 50px;
+    /* Width of the button */
+    height: 50px;
+    /* Height of the button, same as width to make it a circle */
+    font-size: 24px;
+    /* Size of the music note */
+    line-height: 45px;
+    /* Center the music note vertically */
+    text-align: center;
+    /* Center the music note horizontally */
+    cursor: pointer;
+    /* Change mouse cursor to pointer when hovering over the button */
+    outline: none;
+    /* Remove focus outline */
+    box-shadow: none;
+    /* Remove box-shadow if any */
 }
 
 #musicButton:hover {
-    background-color: grey; /* Grey background on hover */
-    opacity: 0.8; /* Make it opaque when hovered */
+    background-color: grey;
+    /* Grey background on hover */
+    opacity: 0.8;
+    /* Make it opaque when hovered */
 }
-
-
