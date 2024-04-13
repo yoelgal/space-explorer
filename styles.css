@@ -22,7 +22,7 @@ body, html {
     padding: 20px 40px;
     font-size: 50px;
     border: 2px solid white; /* White border */
-    background-color: rgba(255, 255, 255, 0.2); /* Transparent background */
+    background-color: transparent;
     color: white;
     cursor: pointer;
     border-radius: 5px;
@@ -32,5 +32,31 @@ body, html {
 
 
 #startButton:hover {
-    background-color: #2980b9; /* Darker button color on hover */
+    background-color: rgba(255, 255, 255, 0.2); /* Transparent background */
 }
+
+#musicButton {
+    z-index: 1000;
+    position: fixed; /* Fixed position */
+    top: 10px; /* 10 pixels from the top */
+    right: 10px; /* 10 pixels from the right */
+    background-color: transparent; /* Transparent background */
+    color: white; /* White text */
+    border: 2px solid white; /* White border */
+    border-radius: 50%; /* Make it round */
+    width: 50px; /* Width of the button */
+    height: 50px; /* Height of the button, same as width to make it a circle */
+    font-size: 24px; /* Size of the music note */
+    line-height: 45px; /* Center the music note vertically */
+    text-align: center; /* Center the music note horizontally */
+    cursor: pointer; /* Change mouse cursor to pointer when hovering over the button */
+    outline: none; /* Remove focus outline */
+    box-shadow: none; /* Remove box-shadow if any */
+}
+
+#musicButton:hover {
+    background-color: grey; /* Grey background on hover */
+    opacity: 0.8; /* Make it opaque when hovered */
+}
+
+
