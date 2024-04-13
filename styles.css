@@ -95,41 +95,94 @@ html {
     transition: all 0.5s ease;
 }
 
-#SunCard {
-    display: none;
-}
 
 #MercuryCard {
     display: none;
+    color: #2f2f2f; /* Dark gray */
+    background-color: rgba(192, 192, 192, 0.9); /* Silver with opacity */
+    border: 3px solid #a9a9a9; /* Dark gray border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    font-family: Arial, sans-serif; /* Default font */
 }
+
 
 #VenusCard {
     display: none;
+    color: #4a4a4a; /* Dark gray */
+    background-color: rgba(255, 215, 0, 0.9); /* Gold with opacity */
+    border: 3px solid #ffd700; /* Gold border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    font-family: Arial, sans-serif; /* Default font */
 }
+
 
 #EarthCard {
     display: none;
+    color: #2f2020; /* Dark brown */
+    background-color: rgba(135, 206, 235, 0.9); /* Sky blue with opacity */
+    border: 3px solid #87ceeb; /* Sky blue border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    font-family: Arial, sans-serif; /* Default font */
 }
+
 
 #MarsCard {
     display: none;
+    color: #4a4a4a; /* Dark gray */
+    background-color: rgba(255, 145, 97, 0.9); /* Light red with opacity */
+    border: 3px solid #8b4513; /* Saddle brown border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    font-family: Arial, sans-serif; /* Default font */
 }
+
 
 #JupiterCard {
     display: none;
+    color: #4a4a4a; /* Dark gray */
+    background-color: rgba(238, 232, 170, 0.9); /* Light yellow with opacity */
+    border: 3px solid #cd853f; /* Peru border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    font-family: Arial, sans-serif; /* Default font */
 }
+
 
 #SaturnCard {
     display: none;
+    color: #4a4a4a; /* Dark gray */
+    background-color: rgba(245, 222, 179, 0.9); /* Light peach with opacity */
+    border: 3px solid #a0522d; /* Sienna border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    font-family: Arial, sans-serif; /* Default font */
 }
+
 
 #UranusCard {
     display: none;
+    color: #4a4a4a; /* Dark gray */
+    background-color: rgba(173, 216, 230, 0.9); /* Light blue with opacity */
+    border: 3px solid #4682b4; /* Steel blue border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    font-family: Arial, sans-serif; /* Default font */
 }
 
 #NeptuneCard {
     display: none;
+    color: #4a4a4a; /* Dark gray */
+    background-color: rgba(102, 178, 255, 0.9); /* Light blue with opacity */
+    border: 3px solid #4169e1; /* Royal blue border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    font-family: Arial, sans-serif; /* Default font */
 }
+
+#SunCard {
+    display: none;
+    color: #4a4a4a; /* Dark gray */
+    background-color: rgba(255, 215, 0, 0.9); /* Gold with opacity */
+    border: 3px solid #ffd700; /* Gold border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    font-family: Arial, sans-serif; /* Default font */
+}
+
 
 .info-card {
     position: fixed;
@@ -137,10 +190,10 @@ html {
     left: 40px;
     width: 300px;
     padding: 15px;
-    color: #2f2020;
-    background-color: rgba(54, 162, 40, 0.62);
+    color: #1e1f22;
+    background-color: rgb(255, 255, 255);
     border-radius: 8px;
-    border: 3px solid darkblue;
+    border: 3px solid #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000; /* Ensures it stays on top of other content */
     font-family: Arial, sans-serif; /* Default font */
