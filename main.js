@@ -48,6 +48,7 @@ const scene = new THREE.Scene()
 let currentScene = scene
 const earthScene = new THREE.Scene()
 const sunScene = new THREE.Scene()
+let neptuneScene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000)
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -212,7 +213,6 @@ loader.load('Flying saucer.glb', (gltf) => {
     ship = gltf.scene
     ship.scale.set(0.5, 0.5, 0.5) // Adjust scale for visibility
     ship.position.set(9999, 9999, 9999)
-    ship.velocity = new THREE.Vector3(0, 0, 0) // Initialize velocity
     scene.add(ship)
     shipLoaded = true
     checkAllAssetsLoaded()
@@ -226,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
     startButton.addEventListener('click', function() {
         start()
     })
+
 })
 
 
@@ -612,6 +613,98 @@ function listsSame() {
     return true
 }
 
+// Scene 4 start
+
+const neptuneAmbientLight = new THREE.AmbientLight(0xffffff, 1) // Soft white light
+neptuneScene.add(neptuneAmbientLight)
+
+let neptuneInput = document.getElementById("neptuneInput")
+let textInput = document.getElementById("textInput")
+let neptuneButton = document.getElementById('neptuneButton')
+
+neptuneButton.addEventListener('click', function () {
+    neptuneFunction()
+})
+
+function neptuneFunction() {
+    console.log(textInput.value)
+}
+
+let allPlanets = []
+
+loader.load('Sun.glb', (gltf) => {
+    let tempSun = gltf.scene
+    tempSun.scale.set(20, 20, 20) // Adjust scale for visibility
+    tempSun.position.set(0, 0, 0)
+    allPlanets.push([tempSun, "Sun"])
+    neptuneScene.add(tempSun)
+})
+
+loader.load('Mercury.glb', (gltf) => {
+    let mercury = gltf.scene
+    mercury.scale.set(40, 40, 40) // Adjust scale for visibility
+    mercury.position.set(0, 0, 0)
+    allPlanets.push([mercury, "Mercury"])
+    neptuneScene.add(mercury)
+})
+
+loader.load('Venus.glb', (gltf) => {
+    let venus = gltf.scene
+    venus.scale.set(35, 35, 35) // Adjust scale for visibility
+    venus.position.set(0, 0, 0)
+    allPlanets.push([venus, "Venus"])
+    neptuneScene.add(venus)
+})
+
+loader.load('Earth.glb', (gltf) => {
+    let earth = gltf.scene
+    earth.scale.set(0.06, 0.06, 0.06) // Adjust scale for visibility
+    earth.position.set(0, 0, 0)
+    allPlanets.push([earth, "Earth"])
+    neptuneScene.add(earth)
+})
+
+loader.load('Mars.glb', (gltf) => {
+    let mars = gltf.scene
+    mars.scale.set(175, 175, 175) // Adjust scale for visibility
+    mars.position.set(0, 0, 0)
+    allPlanets.push([mars, "Mars"])
+    neptuneScene.add(mars)
+})
+
+loader.load('Jupiter.glb', (gltf) => {
+    let jupiter = gltf.scene
+    jupiter.scale.set(0.2, 0.2, 0.2) // Adjust scale for visibility
+    jupiter.position.set(0, 0, 0)
+    allPlanets.push([jupiter, "Jupiter"])
+    neptuneScene.add(jupiter)
+})
+
+loader.load('Saturn.glb', (gltf) => {
+    let saturn = gltf.scene
+    saturn.scale.set(35, 35, 35) // Adjust scale for visibility
+    saturn.position.set(0, 0, 0)
+    allPlanets.push([saturn, "Saturn"])
+    neptuneScene.add(saturn)
+})
+
+loader.load('Uranus.glb', (gltf) => {
+    let uranus = gltf.scene
+    uranus.scale.set(90, 90, 90) // Adjust scale for visibility
+    uranus.position.set(0, 0, 0)
+    allPlanets.push([uranus, "Uranus"])
+    neptuneScene.add(uranus)
+})
+
+loader.load('Neptune.glb', (gltf) => {
+    let neptune = gltf.scene
+    neptune.scale.set(35, 35, 35) // Adjust scale for visibility
+    neptune.position.set(0, 0, 0)
+    allPlanets.push([neptune, "Neptune"])
+    neptuneScene.add(neptune)
+})
+
+
 // Function to update object position based on key presses
 function update() {
     if (!shipLoaded || !sunLoaded || planetsLoaded !== totalPlanets) {
@@ -652,7 +745,7 @@ function update() {
             camera.position.set(0, 300, 0)
             camera.lookAt(new THREE.Vector3(0, 0, 0))
             cameraFollow = false
-            currentScene = sunScene
+            currentScene = neptuneScene
         }
     } else if (currentScene === earthScene) {
 
@@ -725,13 +818,18 @@ function update() {
             planetsPointer += 1
             if (planetsPointer > 7) {
                 planetsPointer = 0
-                if (listsSame())
-                    console.log('yeaaaah')
+                if (listsSame()) {
+                    cameraFollow = true
+                    currentScene = scene
+                }
             }
 
         } else if (!keyboard['x']) {
             xPressed = false
         }
+
+    } else if (currentScene === neptuneScene) {
+        neptuneInput.style.display = "flex"
     }
 
 
@@ -750,7 +848,7 @@ const bobbingAmount = 2  // Amount of vertical movement
 
 function handleEarthSceneInteractions() {
     if (currentScene === earthScene) {
-        bulletArray.forEach(function(bullet, index, bulletArray) {
+        bulletArray.forEach(function (bullet, index, bulletArray) {
             bullet.position.z -= 5
             if (bullet.position.z <= -500) {
                 earthScene.remove(bullet)
@@ -766,7 +864,7 @@ function handleEarthSceneInteractions() {
                 cameraFollow = true
                 currentScene = scene
             }
-            bulletArray.forEach(function(bullet, index2, bulletArray) {
+            bulletArray.forEach(function (bullet, index2, bulletArray) {
                 let bulletBox = new THREE.Box3().setFromObject(bullet)
                 let enemyBox = new THREE.Box3().setFromObject(enemy)
 
