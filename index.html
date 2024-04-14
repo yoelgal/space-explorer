@@ -75,6 +75,8 @@
     <p>Mars has two moons, Phobos and Deimos.</p>
     <p>Fun fact: Mars has the largest volcano in the solar system, Olympus Mons, which is about 21 kilometers high and
         600 kilometers in diameter.</p>
+    <p>Press <strong>Enter</strong> to unlock the chance to purchase tickets to Mars all thanks to our most venerable
+        sponsors, Booking.com! (please hire me)</p>
 </div>
 <div id="JupiterCard" class="info-card">
     <h3>Jupiter</h3>
@@ -161,6 +163,43 @@
 <button id="musicButton"><i class="ph ph-speaker-simple-x"></i></button>
 <div id="overlay">
     <button id="startButton">Start</button>
+</div>
+<div id="Booking">
+    <header class="booking-header">
+        <button class="exit-button" id="exit-button">Exit</button>
+        <img src="public/booking.png" alt="Mars Booking Logo" class="logo">
+        <h1>Mars Ticket Booking Portal</h1>
+        <p>Book your one-way trip to Mars today!</p>
+    </header>
+    <main class="booking-main">
+        <form id="booking-form">
+            <div class="form-group">
+                <label class="booking-label" for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label class="booking-label" for="date">Departure Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+
+            <div class="form-group">
+                <label class="booking-label" for="cabin">Cabin Class:</label>
+                <select id="cabin" name="cabin">
+                    <option value="economy">Economy</option>
+                    <option value="business">Business</option>
+                    <option value="first">First Class</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="booking-label" for="tickets">Number of Tickets:</label>
+                <input type="number" id="tickets" name="tickets" min="1" max="5" required>
+            </div>
+
+            <button class="booking-button" type="submit">Book Your Trip</button>
+        </form>
+        <div id="confirmation"></div>
+    </main>
 </div>
 <script type="module" src="/main.js"></script>
 </body>

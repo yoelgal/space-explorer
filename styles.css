@@ -11,8 +11,9 @@ html {
 }
 
 #blob {
-    z-index: 1000;
+    z-index: 999;
     position: fixed;
+    opacity: 0.7;
     width: 20px; /* Blob size */
     height: 20px;
     background-color: #00fffb; /* Blob color */
@@ -56,7 +57,7 @@ html {
 }
 
 #musicButton {
-    z-index: 1000;
+    z-index: 999;
     position: fixed;
     /* Fixed position */
     top: 10px;
@@ -195,7 +196,7 @@ html {
     border-radius: 8px;
     border: 3px solid #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* Ensures it stays on top of other content */
+    z-index: 999; /* Ensures it stays on top of other content */
     font-family: Arial, sans-serif; /* Default font */
 }
 
@@ -216,4 +217,92 @@ html {
 
 .info-card li {
     margin-bottom: 8px;
+}
+
+#Booking {
+    display: none;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    font-family: Arial, sans-serif;
+}
+
+.booking-header {
+    background-color: rgba(22, 58, 144);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.exit-button {
+    position: absolute;
+    top: 75px;
+    right: 20px;
+    padding: 8px 16px;
+    background-color: #ffffff;
+    color: #282c34;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.logo {
+    height: 100px; /* Adjust size as needed */
+    position: absolute;
+    left: 20px; /* Adjust based on exact placement desires */
+    top: 40px;
+    transform: translateY(-50%);
+}
+
+.booking-main {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.booking-label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.booking-button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+
+#confirmation {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
