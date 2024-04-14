@@ -12,7 +12,7 @@ let planetsMoving = true
 
 
 // BLOB
-document.addEventListener('mousemove', function (event) {
+document.addEventListener('mousemove', function(event) {
     let blob = document.getElementById('blob')
     // Update the blob's position to the mouse coordinates
     blob.style.left = event.pageX + 'px'
@@ -122,7 +122,11 @@ const planetInfo = [
         proximityRadius: 30,
         showingInfo: false,
         action: function() {
-            console.log('Nothing yet')
+            camera.position.set(0, 300, 0)
+            camera.lookAt(new THREE.Vector3(0, 0, 0))
+            cameraFollow = false
+            currentScene = sunScene
+            document.getElementById('JupiterCard').style.display = 'none'
         },
     },
     {
@@ -574,7 +578,7 @@ let xPressed = false
 
 function listsSame() {
     // Iterate over each element in the lists
-    for (var i = 0; i < shuffledPlanets.length; i++) {
+    for (let i = 0; i < shuffledPlanets.length; i++) {
         if (shuffledPlanets[i][1] !== i)
             return false
     }
@@ -663,8 +667,7 @@ function update() {
             currentScene = scene
         }
 
-    }
-    else if (currentScene === sunScene) {
+    } else if (currentScene === sunScene) {
         if (keyboard['n']) {
             // Calculate the direction of movement based on the object's rotation
             cameraFollow = true
@@ -673,10 +676,10 @@ function update() {
 
         if (keyboard['b']) {
             // Calculate the direction of movement based on the object's rotation
-            shuffledPlanets.sort(function (a, b) {
+            shuffledPlanets.sort(function(a, b) {
                 // Compare the values at index 1 of each element
-                return a[1] - b[1]; // Ascending order
-            });
+                return a[1] - b[1] // Ascending order
+            })
         }
 
         if (keyboard['z'] && !zPressed) {
@@ -687,8 +690,7 @@ function update() {
             planetsPointer += 1
             if (planetsPointer > 7)
                 planetsPointer = 0
-        }
-        else if (!keyboard['z']) {
+        } else if (!keyboard['z']) {
             zPressed = false
         }
         if (keyboard['x'] && !xPressed) {
@@ -697,11 +699,10 @@ function update() {
             if (planetsPointer > 7) {
                 planetsPointer = 0
                 if (listsSame())
-                    console.log("yeaaaah")
+                    console.log('yeaaaah')
             }
 
-        }
-        else if (!keyboard['x']) {
+        } else if (!keyboard['x']) {
             xPressed = false
         }
     }
@@ -764,7 +765,7 @@ function animate() {
         if (planetsMoving) {
             // Increment the angle if the camera follows the ship, change the increment rate
             if (cameraFollow) {
-                planet.angle += planet.speed / 2 // slower or different rate when following the camera
+                planet.angle += planet.speed / 4 // slower or different rate when following the camera
             } else {
                 planet.angle += planet.speed // normal rate when not following
             }
@@ -786,10 +787,10 @@ function animate() {
     handleEarthSceneInteractions()
     if (currentScene === sunScene) {
         if (!planetsShuffled) {
-            orderedPlanets.sort(function (a, b) {
+            orderedPlanets.sort(function(a, b) {
                 // Compare the values at index 1 of each element
-                return a[1] - b[1]; // Ascending order
-            });
+                return a[1] - b[1] // Ascending order
+            })
             let tempLength = orderedPlanets.length
             for (let i = 0; i < tempLength; i++) {
                 let j = getRandomInt(0, orderedPlanets.length - 1)
@@ -798,9 +799,9 @@ function animate() {
             }
             planetsShuffled = true
         }
-        shuffledPlanets.forEach(function (planet, index, shuffledPlanets) {
+        shuffledPlanets.forEach(function(planet, index, shuffledPlanets) {
             planet[0].position.set(((index - 4) * 85), 0, 0)
-        });
+        })
     }
 
 
