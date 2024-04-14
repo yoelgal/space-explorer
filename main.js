@@ -575,14 +575,10 @@ let xPressed = false
 function listsSame() {
     // Iterate over each element in the lists
     for (var i = 0; i < shuffledPlanets.length; i++) {
-        // Compare elements at the same position
-        if (shuffledPlanets[i] !== orderedPlanets[i]) {
-            return false; // If elements don't match, lists are not in the same order
-        }
+        if (shuffledPlanets[i][1] !== i)
+            return false
     }
-
-    // If all elements match at corresponding positions, lists are in the same order
-    return true;
+    return true
 }
 
 // Function to update object position based on key presses
@@ -672,6 +668,14 @@ function update() {
             // Calculate the direction of movement based on the object's rotation
             cameraFollow = true
             currentScene = scene
+        }
+
+        if (keyboard['b']) {
+            // Calculate the direction of movement based on the object's rotation
+            shuffledPlanets.sort(function (a, b) {
+                // Compare the values at index 1 of each element
+                return a[1] - b[1]; // Ascending order
+            });
         }
 
         if (keyboard['z'] && !zPressed) {
@@ -776,12 +780,12 @@ function animate() {
                 // Compare the values at index 1 of each element
                 return a[1] - b[1]; // Ascending order
             });
-            // for (let i = 0; i < orderedPlanets.length; i++) {
-            //     let j = getRandomInt(0, orderedPlanets.length - 1)
-            //     shuffledPlanets.push(orderedPlanets[j])
-            //     orderedPlanets.slice(j, 1)
-            // }
-            shuffledPlanets = orderedPlanets
+            let tempLength = orderedPlanets.length
+            for (let i = 0; i < tempLength; i++) {
+                let j = getRandomInt(0, orderedPlanets.length - 1)
+                shuffledPlanets.push(orderedPlanets[j])
+                orderedPlanets.splice(j, 1)
+            }
             planetsShuffled = true
         }
         shuffledPlanets.forEach(function (planet, index, shuffledPlanets) {
