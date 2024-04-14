@@ -110,7 +110,32 @@ const planetInfo = [
         proximityRadius: 30,
         showingInfo: false,
         action: function() {
-            console.log('Nothing yet')
+            document.getElementById('MarsCard').style.display = 'none'
+            // document.getElementById('blob').style.display = 'none'
+            document.getElementById('Booking').style.display = 'block'
+
+            const exitButton = document.getElementById('exit-button')
+            exitButton.addEventListener('click', function() {
+                document.getElementById('Booking').style.display = 'none'
+                document.getElementById('MarsCard').style.display = 'block'
+            })
+
+            document.getElementById('booking-form').addEventListener('submit', function(event) {
+                event.preventDefault()
+
+                const name = document.getElementById('name').value
+                const date = document.getElementById('date').value
+                const cabin = document.getElementById('cabin').value
+                const tickets = document.getElementById('tickets').value
+                const confirmation = document.getElementById('confirmation')
+
+                if (!name || !date || !tickets) {
+                    confirmation.innerHTML = `<p>Please fill all fields correctly.</p>`
+                    return
+                }
+
+                confirmation.innerHTML = `<p>Thank you, ${name}. You have booked ${tickets} ${cabin} class tickets to Mars on ${date}.</p>`
+            })
         },
     },
     {
@@ -187,11 +212,13 @@ loader.load('Flying saucer.glb', (gltf) => {
     ship = gltf.scene
     ship.scale.set(0.5, 0.5, 0.5) // Adjust scale for visibility
     ship.position.set(9999, 9999, 9999)
+    ship.velocity = new THREE.Vector3(0, 0, 0) // Initialize velocity
     scene.add(ship)
     shipLoaded = true
     checkAllAssetsLoaded()
 
 })
+
 
 document.addEventListener('DOMContentLoaded', function() {
     let startButton = document.getElementById('startButton')
