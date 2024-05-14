@@ -45,10 +45,6 @@ musicButton.addEventListener('click', function() {
 
 // SCENE
 const scene = new THREE.Scene()
-let currentScene = scene
-const earthScene = new THREE.Scene()
-const sunScene = new THREE.Scene()
-let neptuneScene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000)
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -95,11 +91,7 @@ const planetInfo = [
         showingInfo: false,
         action: function() {
             // Calculate the direction of movement based on the object's rotation
-            camera.position.set(0, 300, 0)
-            camera.lookAt(new THREE.Vector3(0, 0, 0))
-            cameraFollow = false
-            currentScene = earthScene
-            document.getElementById('EarthCard').style.display = 'none'
+            console.log('Nothing yet')
         },
     },
     {
@@ -111,32 +103,7 @@ const planetInfo = [
         proximityRadius: 30,
         showingInfo: false,
         action: function() {
-            document.getElementById('MarsCard').style.display = 'none'
-            // document.getElementById('blob').style.display = 'none'
-            document.getElementById('Booking').style.display = 'block'
-
-            const exitButton = document.getElementById('exit-button')
-            exitButton.addEventListener('click', function() {
-                document.getElementById('Booking').style.display = 'none'
-                document.getElementById('MarsCard').style.display = 'block'
-            })
-
-            document.getElementById('booking-form').addEventListener('submit', function(event) {
-                event.preventDefault()
-
-                const name = document.getElementById('name').value
-                const date = document.getElementById('date').value
-                const cabin = document.getElementById('cabin').value
-                const tickets = document.getElementById('tickets').value
-                const confirmation = document.getElementById('confirmation')
-
-                if (!name || !date || !tickets) {
-                    confirmation.innerHTML = `<p>Please fill all fields correctly.</p>`
-                    return
-                }
-
-                confirmation.innerHTML = `<p>Thank you, ${name}. You have booked ${tickets} ${cabin} class tickets to Mars on ${date}.</p>`
-            })
+            console.log('Nothing yet')
         },
     },
     {
@@ -148,11 +115,7 @@ const planetInfo = [
         proximityRadius: 30,
         showingInfo: false,
         action: function() {
-            camera.position.set(0, 300, 0)
-            camera.lookAt(new THREE.Vector3(0, 0, 0))
-            cameraFollow = false
-            currentScene = sunScene
-            document.getElementById('JupiterCard').style.display = 'none'
+            console.log('Nothing yet')
         },
     },
     {
@@ -194,7 +157,7 @@ const planetInfo = [
 ]
 
 // Ambient Light
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.7) // Soft white light
+const ambientLight = new THREE.AmbientLight(0xffffff, 1) // Soft white light
 scene.add(ambientLight)
 
 // Load the Sun
@@ -433,146 +396,6 @@ let cameraYaw = 0
 let cameraDirection = new THREE.Vector3()
 
 
-// SCENE TWO //
-// Scene 2 sun test
-
-let earthShip
-let earthShipSpeed = 5
-
-loader.load('Spaceship.glb', (gltf) => {
-    earthShip = gltf.scene
-    earthShip.scale.set(0.1, 0.1, 0.1) // Adjust scale for visibility
-    earthShip.position.set(0, 0, 180)
-    earthShip.rotation.set(0, 3.14, 0)
-    earthScene.add(earthShip)
-})
-
-const earthAmbientLight = new THREE.AmbientLight(0xffffff, 1) // Soft white light
-earthScene.add(earthAmbientLight)
-
-let canFire = true
-let canEnemy = true
-
-let bulletArray = []
-
-function createBullet(position) {
-    let bullet
-    loader.load('Spaceship.glb', (gltf) => {
-        bullet = gltf.scene
-        bullet.scale.set(0.1, 0.1, 0.1) // Adjust scale for visibility
-        position.z -= 10
-        bullet.position.set(position.x, position.y, position.z)
-        bullet.rotation.set(0, 3.14, 0)
-
-        earthScene.add(bullet)
-        bulletArray.push(bullet)
-    })
-}
-
-let enemyArray = []
-
-function getRandomInt(min, max) {
-    min = Math.ceil(min)
-    max = Math.floor(max)
-    return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-function createEnemy() {
-    let enemy
-    loader.load('Spaceship.glb', (gltf) => {
-        enemy = gltf.scene
-        enemy.scale.set(0.1, 0.1, 0.1) // Adjust scale for visibility
-        enemy.position.set(getRandomInt(-300, 300), 0, -300)
-
-        earthScene.add(enemy)
-        enemyArray.push(enemy)
-    })
-}
-
-// Scene 3 start
-
-const sunAmbientLight = new THREE.AmbientLight(0xffffff, 1) // Soft white light
-sunScene.add(sunAmbientLight)
-
-let orderedPlanets = []
-let shuffledPlanets = []
-
-let planetsShuffled = false
-
-let planetsPointer = 0
-
-loader.load('Sun.glb', (gltf) => {
-    let tempSun = gltf.scene
-    tempSun.scale.set(20, 20, 20) // Adjust scale for visibility
-    tempSun.position.set(0, 0, 0)
-    orderedPlanets.push([tempSun, 0])
-    sunScene.add(tempSun)
-})
-
-loader.load('Mercury.glb', (gltf) => {
-    let mercury = gltf.scene
-    mercury.scale.set(40, 40, 40) // Adjust scale for visibility
-    mercury.position.set(0, 0, 0)
-    orderedPlanets.push([mercury, 1])
-    sunScene.add(mercury)
-})
-
-loader.load('Venus.glb', (gltf) => {
-    let venus = gltf.scene
-    venus.scale.set(35, 35, 35) // Adjust scale for visibility
-    venus.position.set(0, 0, 0)
-    orderedPlanets.push([venus, 2])
-    sunScene.add(venus)
-})
-
-loader.load('Earth.glb', (gltf) => {
-    let earth = gltf.scene
-    earth.scale.set(0.06, 0.06, 0.06) // Adjust scale for visibility
-    earth.position.set(0, 0, 0)
-    orderedPlanets.push([earth, 3])
-    sunScene.add(earth)
-})
-
-loader.load('Mars.glb', (gltf) => {
-    let mars = gltf.scene
-    mars.scale.set(175, 175, 175) // Adjust scale for visibility
-    mars.position.set(0, 0, 0)
-    orderedPlanets.push([mars, 4])
-    sunScene.add(mars)
-})
-
-loader.load('Jupiter.glb', (gltf) => {
-    let jupiter = gltf.scene
-    jupiter.scale.set(0.2, 0.2, 0.2) // Adjust scale for visibility
-    jupiter.position.set(0, 0, 0)
-    orderedPlanets.push([jupiter, 5])
-    sunScene.add(jupiter)
-})
-
-loader.load('Saturn.glb', (gltf) => {
-    let saturn = gltf.scene
-    saturn.scale.set(35, 35, 35) // Adjust scale for visibility
-    saturn.position.set(0, 0, 0)
-    orderedPlanets.push([saturn, 6])
-    sunScene.add(saturn)
-})
-
-loader.load('Uranus.glb', (gltf) => {
-    let uranus = gltf.scene
-    uranus.scale.set(90, 90, 90) // Adjust scale for visibility
-    uranus.position.set(0, 0, 0)
-    orderedPlanets.push([uranus, 7])
-    sunScene.add(uranus)
-})
-
-loader.load('Neptune.glb', (gltf) => {
-    let neptune = gltf.scene
-    neptune.scale.set(35, 35, 35) // Adjust scale for visibility
-    neptune.position.set(0, 0, 0)
-    orderedPlanets.push([neptune, 8])
-    sunScene.add(neptune)
-})
-
 // Function to update camera position based on the ship's position and orientation
 function updateCamera() {
 
@@ -601,108 +424,20 @@ function start() {
     cameraFollow = true
 }
 
-let zPressed = false
-let xPressed = false
+let titleChangeable = true
 
-function listsSame() {
-    // Iterate over each element in the lists
-    for (let i = 0; i < shuffledPlanets.length; i++) {
-        if (shuffledPlanets[i][1] !== i)
-            return false
+function updateTitle() {
+    let title = document.title
+    if (titleChangeable) {
+        let lastChars = title.substring(title.length - 2, title.length)
+
+        document.title = lastChars + title.slice(0, -2)
+
+        titleChangeable = false
+        setTimeout(() => titleChangeable = true, 750)
     }
-    return true
+
 }
-
-// Scene 4 start
-
-const neptuneAmbientLight = new THREE.AmbientLight(0xffffff, 1) // Soft white light
-neptuneScene.add(neptuneAmbientLight)
-
-let neptuneInput = document.getElementById("neptuneInput")
-let textInput = document.getElementById("textInput")
-let neptuneButton = document.getElementById('neptuneButton')
-
-neptuneButton.addEventListener('click', function () {
-    neptuneFunction()
-})
-
-function neptuneFunction() {
-    console.log(textInput.value)
-}
-
-let allPlanets = []
-
-loader.load('Sun.glb', (gltf) => {
-    let tempSun = gltf.scene
-    tempSun.scale.set(20, 20, 20) // Adjust scale for visibility
-    tempSun.position.set(0, 0, 0)
-    allPlanets.push([tempSun, "Sun"])
-    neptuneScene.add(tempSun)
-})
-
-loader.load('Mercury.glb', (gltf) => {
-    let mercury = gltf.scene
-    mercury.scale.set(40, 40, 40) // Adjust scale for visibility
-    mercury.position.set(0, 0, 0)
-    allPlanets.push([mercury, "Mercury"])
-    neptuneScene.add(mercury)
-})
-
-loader.load('Venus.glb', (gltf) => {
-    let venus = gltf.scene
-    venus.scale.set(35, 35, 35) // Adjust scale for visibility
-    venus.position.set(0, 0, 0)
-    allPlanets.push([venus, "Venus"])
-    neptuneScene.add(venus)
-})
-
-loader.load('Earth.glb', (gltf) => {
-    let earth = gltf.scene
-    earth.scale.set(0.06, 0.06, 0.06) // Adjust scale for visibility
-    earth.position.set(0, 0, 0)
-    allPlanets.push([earth, "Earth"])
-    neptuneScene.add(earth)
-})
-
-loader.load('Mars.glb', (gltf) => {
-    let mars = gltf.scene
-    mars.scale.set(175, 175, 175) // Adjust scale for visibility
-    mars.position.set(0, 0, 0)
-    allPlanets.push([mars, "Mars"])
-    neptuneScene.add(mars)
-})
-
-loader.load('Jupiter.glb', (gltf) => {
-    let jupiter = gltf.scene
-    jupiter.scale.set(0.2, 0.2, 0.2) // Adjust scale for visibility
-    jupiter.position.set(0, 0, 0)
-    allPlanets.push([jupiter, "Jupiter"])
-    neptuneScene.add(jupiter)
-})
-
-loader.load('Saturn.glb', (gltf) => {
-    let saturn = gltf.scene
-    saturn.scale.set(35, 35, 35) // Adjust scale for visibility
-    saturn.position.set(0, 0, 0)
-    allPlanets.push([saturn, "Saturn"])
-    neptuneScene.add(saturn)
-})
-
-loader.load('Uranus.glb', (gltf) => {
-    let uranus = gltf.scene
-    uranus.scale.set(90, 90, 90) // Adjust scale for visibility
-    uranus.position.set(0, 0, 0)
-    allPlanets.push([uranus, "Uranus"])
-    neptuneScene.add(uranus)
-})
-
-loader.load('Neptune.glb', (gltf) => {
-    let neptune = gltf.scene
-    neptune.scale.set(35, 35, 35) // Adjust scale for visibility
-    neptune.position.set(0, 0, 0)
-    allPlanets.push([neptune, "Neptune"])
-    neptuneScene.add(neptune)
-})
 
 
 // Function to update object position based on key presses
@@ -713,124 +448,34 @@ function update() {
     }
 
     // Move forward when 'W' key is pressed
-    if (currentScene === scene) {
-        if (keyboard['w']) {
-            // Calculate the direction of movement based on the object's rotation
-            let velocity = new THREE.Vector3(movementSpeed * cameraDirection.x, 0, movementSpeed * cameraDirection.z)
-            // Update the ship's position
-            ship.position.add(velocity)
-        }
 
-        if (keyboard['a']) {
-            // Calculate the direction of movement based on the object's rotation
-            cameraYaw += cameraRotationSpeed
-        }
-
-        if (keyboard['s']) {
-            // Calculate the direction of movement based on the object's rotation
-            let velocity = new THREE.Vector3(movementSpeed * -cameraDirection.x, 0, movementSpeed * -cameraDirection.z)
-            // Update the ship's position
-            ship.position.add(velocity)
-        }
-
-        if (keyboard['d']) {
-            // Calculate the direction of movement based on the object's rotation
-            cameraYaw -= cameraRotationSpeed
-        }
-
-
-        checkProximity()
-        if (keyboard['m']) {
-            // Calculate the direction of movement based on the object's rotation
-            camera.position.set(0, 300, 0)
-            camera.lookAt(new THREE.Vector3(0, 0, 0))
-            cameraFollow = false
-            currentScene = neptuneScene
-        }
-    } else if (currentScene === earthScene) {
-
-        if (canEnemy) {
-            createEnemy()
-            canEnemy = false
-            setTimeout(function() {
-                canEnemy = true // Reset flag after cooldown period
-            }, getRandomInt(3000, 5000))
-        }
-
-        if (keyboard['a']) {
-            // Calculate the direction of movement based on the object's rotation
-            let earthVelocity = new THREE.Vector3(-earthShipSpeed, 0, 0)
-            // Update the earthShip's position
-            earthShip.position.add(earthVelocity)
-        }
-
-        if (keyboard['d']) {
-            // Calculate the direction of movement based on the object's rotation
-            let earthVelocity = new THREE.Vector3(earthShipSpeed, 0, 0)
-            // Update the earthShip's position
-            earthShip.position.add(earthVelocity)
-        }
-
-        if (keyboard[' '] && canFire) {
-            // Calculate the direction of movement based on the object's rotation
-            createBullet(earthShip.position.clone())
-            canFire = false
-            setTimeout(function() {
-                canFire = true // Reset flag after cooldown period
-            }, 1000)
-        }
-
-
-        if (keyboard['n']) {
-            // Calculate the direction of movement based on the object's rotation
-            cameraFollow = true
-            currentScene = scene
-        }
-
-    } else if (currentScene === sunScene) {
-        if (keyboard['n']) {
-            // Calculate the direction of movement based on the object's rotation
-            cameraFollow = true
-            currentScene = scene
-        }
-
-        if (keyboard['b']) {
-            // Calculate the direction of movement based on the object's rotation
-            shuffledPlanets.sort(function(a, b) {
-                // Compare the values at index 1 of each element
-                return a[1] - b[1] // Ascending order
-            })
-        }
-
-        if (keyboard['z'] && !zPressed) {
-            zPressed = true
-            let temp = shuffledPlanets[planetsPointer]
-            shuffledPlanets[planetsPointer] = shuffledPlanets[planetsPointer + 1]
-            shuffledPlanets[planetsPointer + 1] = temp
-            planetsPointer += 1
-            if (planetsPointer > 7)
-                planetsPointer = 0
-        } else if (!keyboard['z']) {
-            zPressed = false
-        }
-        if (keyboard['x'] && !xPressed) {
-            xPressed = true
-            planetsPointer += 1
-            if (planetsPointer > 7) {
-                planetsPointer = 0
-                if (listsSame()) {
-                    cameraFollow = true
-                    currentScene = scene
-                }
-            }
-
-        } else if (!keyboard['x']) {
-            xPressed = false
-        }
-
-    } else if (currentScene === neptuneScene) {
-        neptuneInput.style.display = "flex"
+    if (keyboard['w']) {
+        updateTitle()
+        // Calculate the direction of movement based on the object's rotation
+        let velocity = new THREE.Vector3(movementSpeed * cameraDirection.x, 0, movementSpeed * cameraDirection.z)
+        // Update the ship's position
+        ship.position.add(velocity)
     }
+
+    if (keyboard['a']) {
+        // Calculate the direction of movement based on the object's rotation
+        cameraYaw += cameraRotationSpeed
+    }
+
+    if (keyboard['s']) {
+        // Calculate the direction of movement based on the object's rotation
+        let velocity = new THREE.Vector3(movementSpeed * -cameraDirection.x, 0, movementSpeed * -cameraDirection.z)
+        // Update the ship's position
+        ship.position.add(velocity)
+    }
+
+    if (keyboard['d']) {
+        // Calculate the direction of movement based on the object's rotation
+        cameraYaw -= cameraRotationSpeed
+    }
+
+
+    checkProximity()
 
 
     // You can add similar checks for other keys like 'A', 'S', 'D' for movement in other directions
@@ -846,38 +491,6 @@ let bobbingAngle = 0  // Initial angle for the sine function
 const bobbingSpeed = 0.02  // Speed of the bobbing motion
 const bobbingAmount = 2  // Amount of vertical movement
 
-function handleEarthSceneInteractions() {
-    if (currentScene === earthScene) {
-        bulletArray.forEach(function (bullet, index, bulletArray) {
-            bullet.position.z -= 5
-            if (bullet.position.z <= -500) {
-                earthScene.remove(bullet)
-                bulletArray.splice(index, 1)
-            }
-        })
-
-        enemyArray.forEach(function(enemy, index, enemyArray) {
-            enemy.position.z += 5
-            if (enemy.position.z >= 300) {
-                earthScene.remove(enemy)
-                enemyArray.splice(index, 1)
-                cameraFollow = true
-                currentScene = scene
-            }
-            bulletArray.forEach(function (bullet, index2, bulletArray) {
-                let bulletBox = new THREE.Box3().setFromObject(bullet)
-                let enemyBox = new THREE.Box3().setFromObject(enemy)
-
-                if (bulletBox.intersectsBox(enemyBox)) {
-                    earthScene.remove(bullet)
-                    bulletArray.splice(index2, 1)
-                    earthScene.remove(enemy)
-                    enemyArray.splice(index, 1)
-                }
-            })
-        })
-    }
-}
 
 // Update planets in their orbits
 function animate() {
@@ -909,28 +522,8 @@ function animate() {
         ship.position.y = 10 + Math.sin(bobbingAngle) * bobbingAmount
     }
 
-    handleEarthSceneInteractions()
-    if (currentScene === sunScene) {
-        if (!planetsShuffled) {
-            orderedPlanets.sort(function(a, b) {
-                // Compare the values at index 1 of each element
-                return a[1] - b[1] // Ascending order
-            })
-            let tempLength = orderedPlanets.length
-            for (let i = 0; i < tempLength; i++) {
-                let j = getRandomInt(0, orderedPlanets.length - 1)
-                shuffledPlanets.push(orderedPlanets[j])
-                orderedPlanets.splice(j, 1)
-            }
-            planetsShuffled = true
-        }
-        shuffledPlanets.forEach(function(planet, index, shuffledPlanets) {
-            planet[0].position.set(((index - 4) * 85), 0, 0)
-        })
-    }
 
-
-    renderer.render(currentScene, camera)
+    renderer.render(scene, camera)
 }
 
 
